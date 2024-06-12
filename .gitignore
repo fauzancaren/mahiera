@@ -1,0 +1,8 @@
+asset/image/file/
+asset/image/payment/
+asset/image/pengiriman/
+asset/image/produk/ 
+application/cache/
+api/fingerspot/log/*
+temp/
+application/third_party/

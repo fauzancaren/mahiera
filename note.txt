@@ -1,0 +1,60 @@
+
+ALTER TABLE `TblPODetail` ADD COLUMN `MsVendorCode` VARCHAR(10) NOT NULL DEFAULT '0' AFTER `MsItemId`;
+ALTER TABLE `TblPO` ADD COLUMN `MsEmpId` VARCHAR(10) DEFAULT '0' AFTER `POName`;
+ALTER TABLE `TblPO` ADD COLUMN `POEstimate` DATE NOT NULL AFTER `PODate2`;
+ALTER TABLE `TblPO` ADD COLUMN `PODst` int(10) NOT NULL AFTER `POEstimate`;
+
+Update TblPO LEFT JOIN TblPODetail on PODetailRef = POCode SET MsVendorCode=MsVendorId;
+update TblPODetail LEFT JOIN TblMsVendor ON TblPODetail.MsVendorCode=TblMsVendor.MsVendorId SET TblPODetail.MsVendorCode=ifnull(TblMsVendor.MsVendorCode,"-");
+update TblPO LEFT JOIN TblMsEmployee ON POName= MsEmpName SET TblPO.MsEmpId=TblMsEmployee.MsEmpId WHERE POName !='-' OR  POName !='';
+update TblPO LEFT JOIN TblMsEmployee ON POCreateUser=CONCAT(MsEmpCode," - ",MsEmpName) SET TblPO.MsEmpId=TblMsEmployee.MsEmpId WHERE POName='-';
+
+ALTER TABLE `TblInvTO` ADD COLUMN `SalesRef` VARCHAR(35) DEFAULT '0' AFTER `InvTOCode`;
+
+
+ALTER TABLE `TblDelivery` ADD COLUMN `DeliveryRef2` VARCHAR(50) NOT NULL AFTER `DeliveryRef`;
+ALTER TABLE `TblDelivery` ADD COLUMN `DeliveryFrom` int(10) NOT NULL AFTER `DeliveryRef`;
+ALTER TABLE `TblDelivery` ADD COLUMN `DeliveryType` int(10) NOT NULL AFTER `DeliveryRef`;
+ALTER TABLE `TblDelivery` ADD COLUMN `DeliveryRemarks` VARCHAR(200) NOT NULL AFTER `DeliveryRef`;
+ALTER TABLE `TblDelivery` ADD COLUMN `MsEmpId` VARCHAR(200) NOT NULL AFTER `DeliveryRef`;
+ALTER TABLE `TblDeliveryDetail` ADD COLUMN `DeliveryDetailSpareQty` FLOAT NOT NULL AFTER `DeliveryDetailQty`;
+ALTER TABLE `TblDelivery` ADD COLUMN `DeliveryDateKirim` DATE NOT NULL AFTER `DeliveryDate`;
+ALTER TABLE `TblDelivery` ADD COLUMN `DeliveryDateFinish` DATE NOT NULL AFTER `DeliveryDateKirim`;
+
+ALTER TABLE `TblGRPO` ADD COLUMN `MsEmpId` INT NULL AFTER `GRPOName`;
+ALTER TABLE `TblGRPODetail` ADD COLUMN `MsVendorCode` VARCHAR(10) NULL AFTER `MsItemId`;
+
+ALTER TABLE `TblMsWorkplace` ADD COLUMN `MsWorkplaceMap` VARCHAR(100) NOT NULL AFTER `MsWorkplaceFax`;
+ALTER TABLE `TblMsWorkplace` ADD COLUMN `MsWorkplaceLat` DECIMAL(10,8) NOT NULL AFTER `MsWorkplaceFax`;
+ALTER TABLE `TblMsWorkplace` ADD COLUMN `MsWorkplaceLng` DECIMAL(11,8) NOT NULL AFTER `MsWorkplaceFax`; 
+
+
+
+
+
+
+
+Selamat sore team, saya telah melakukan update *PEMBARUAN SYSTEM* yaitu 
+*SYSTEM*
+   - Perubahan thema aplikasi
+
+*PENJUALAN*
+   - Penambahan Tab Transfer Barang (tujuannya jika customer melakukan pengambilan langsung atau pengiriman barang dari toko tersebut)
+
+*PO*
+   - jika pilihan vendor who maka semua item bisa dipilih
+   - penambahan pilihan lokasi tujuan
+   - penambahan Tab untuk direct langsung pengiriman    
+   - penambahan Tab untuk Pembuatan GRPO
+
+*PENGIRIMAN*
+   - nomer rit pengiriman bisa dimasukan manual    
+   - penambahan tipe pengiriman yang bertujuan sebagai klasifikasi jenis dokumen yang dibuat
+   - jika armada dipilih omahbata maka akan terbuka pilihan jenis armada( engkel, pickup atau ps) dan ini masih bisa diedit kembali jika ingin disesuaikan
+   - jika tipe pengiriman dipilih ke toko atau gudang  maka akan muncul pilihan tujuan toko/gudang dan secara otomatis alamat pengiriman akan tertuju pada alamat toko/gudang, 
+   - jika tipe pengiriman dipilih vendor->*  maka wajib memasukan nomer PO 
+   - Penambahan catatan pengiriman - (tidak keluar di print out)
+   - Penambahan Pengirim (tempat pengambilan barang)- (tidak keluar di print out)
+
+
+   test

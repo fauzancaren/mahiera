@@ -1,0 +1,56 @@
+.card-sales {
+   background: white;
+   border-radius: 0.5rem;
+}
+
+.card-sales>.card-sales-footer {
+   border-bottom-left-radius: 10px;
+   border-bottom-right-radius: 10px;
+   background-color: rgba(0, 0, 0, .1);
+   color: rgba(255, 255, 255, .8);
+   display: block;
+   padding: 3px 0;
+   position: relative;
+   text-align: center;
+   text-decoration: none;
+   z-index: 10;
+}
+
+.card-sales>.card-sales-footer:hover {
+   background-color: rgba(0, 0, 0, .15);
+   color: #fff;
+   cursor: pointer;
+}
+
+.card-sales>.card-desc {
+   padding: 1rem;
+   position: relative;
+
+}
+
+.card-sales>.card-desc>.card-icon {
+   position: absolute;
+   right: 10px;
+   top: 20px;
+   font-size: 1.5rem;
+   vertical-align: top;
+   color: rgba(0, 0, 0, .2);
+   transition: font-size .3s;
+}
+
+.card-sales:hover>.card-desc>.card-icon {
+   font-size: 1.7rem;
+   transition: font-size 0.3s;
+}
+
+.card-sales>.card-desc>.card-title {
+   font-size: 0.9rem;
+   font-weight: 700;
+   color: #eaeaea;
+}
+
+.card-sales>.card-desc>.card-total {
+   font-size: 1.5rem;
+   font-weight: 700;
+   color: #eaeaea;
+}

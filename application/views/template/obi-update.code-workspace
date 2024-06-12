@@ -1,0 +1,28 @@
+{
+	"folders": [
+		{
+			"path": "../../.."
+		},
+		{
+			"name": "SSH FS - server",
+			"uri": "ssh://server/"
+		}
+	],
+	"settings": {
+		"sqltools.connections": [
+			{
+				"mysqlOptions": {
+					"authProtocol": "default"
+				},
+				"previewLimit": 50,
+				"server": "localhost",
+				"port": 3306,
+				"driver": "MariaDB",
+				"name": "local",
+				"database": "u137848616_obi_server",
+				"username": "u137848616_obi_server",
+				"password": "SvrOmahBata13"
+			}
+		]
+	}
+}
