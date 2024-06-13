@@ -43,13 +43,13 @@
 
       .btn-check:active+.btn-check-obi,
       .btn-check:checked+.btn-check-obi {
-         color: #fa8100;
-         border-color: #e79726;
+         color: #6c9bcf;
+         border-color: #6c9bcf;
       }
 
       .btn-check-obi {
          color: #9f9f9f;
-         background-color: #fff9f1;
+         background-color: #f7fdff;
          border-color: #cfcfcf;
          padding: 0.2rem !important;
          font-weight: bold;
@@ -115,7 +115,8 @@
          display: block;
          text-align: center;
          height: 8rem;
-         color: #ff6600;
+         color: #6c9bcf;
+;
       }
 
       .card-sales-footer {

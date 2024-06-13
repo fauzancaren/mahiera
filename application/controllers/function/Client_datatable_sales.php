@@ -21,7 +21,7 @@ class Client_datatable_sales extends CI_Controller
             $this->m_penjualan->tablejoin = array(
                   array(0 => 'TblQuoDetail', 1 => 'TblQuotation.QuoCode=TblQuoDetail.QuoDetailRef'),
                   array(0 => 'TblQuoOptional', 1 => 'TblQuotation.QuoCode=TblQuoOptional.QuoOptionalRef'),
-                  array(0 => 'TblMsProduk', 1 => 'TblMsProduk.MsProdukId=TblQuoDetail.MsItemId'),
+                  array(0 => 'TblMsProduk', 1 => 'TblMsProduk.MsProdukId=TblQuoDetail.MsProdukId'),
                   array(0 => 'TblMsCustomer', 1 => 'TblQuotation.MsCustomerId=TblMsCustomer.MsCustomerId'),
                   array(0 => 'TblMsCustomerDelivery', 1 => 'TblQuotation.MsCustomerDeliveryId=TblMsCustomerDelivery.MsCustomerDeliveryId'),
                   array(0 => 'TblMsEmployee', 1 => 'TblMsEmployee.MsEmpId=TblQuotation.MsEmpId'),

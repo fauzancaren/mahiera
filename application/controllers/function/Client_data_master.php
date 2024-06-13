@@ -447,14 +447,29 @@ class Client_data_master extends CI_Controller
             foreach($detail as $det){
                 $data = array(
                     "MsProdukDetailPrice" => $det["MsProdukDetailPrice"],
+                    "MsProdukDetailCogs" =>  $det["MsProdukDetailCogs"],
                     "MsProdukDetailVarian" => $det["MsProdukVarian"],
                     "BeratId" =>  $det["BeratId"],
                     "MsProdukDetailBerat" =>  $det["BeratQty"],
                     "SatuanId" =>  $det["SatuanId"],
                     "MsProdukDetailRef" =>  $id, 
+                    "MsProdukDetailpcsM2" => $det["MsProdukDetailpcsM2"],  
                 );   
                 $this->db->insert('TblMsProdukDetail', $data); //insert data detail
+                
+                $query = $this->db->get('TblMsWorkplace')->result();
+                foreach($query as $row){
+                    $data = array(
+                        "MsProdukVarian" => $det["MsProdukVarian"],
+                        "MsProdukId" =>  $id, 
+                        "MsWorkplaceId" => $row->MsWorkplaceId,
+                        "MsProdukStockQty" =>  0, 
+                        "MsProdukStockBuffer" =>  0, 
+                    );   
+                    $this->db->insert('TblMsProdukStock', $data); //insert data detail
+                }
             }
+            
             echo $id;
 
             //insert data image 

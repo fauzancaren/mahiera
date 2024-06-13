@@ -148,6 +148,7 @@
 		number_format = function(number, decimals = 0) {
 			dec_point = '.';
 			thousands_sep = ',';
+			number = parseFloat(number);
 			number = number.toFixed(decimals);
 
 			var nstr = number.toString();

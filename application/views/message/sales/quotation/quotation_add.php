@@ -11,32 +11,18 @@
                   <div class="row mb-1 align-items-center">
                      <label for="Quoheader" class="col-sm-2 col-form-label">Header Doc.</label>
                      <div class="col-sm-10">
-                        <div class="form-check form-check-inline">
+                        <div class="form-check form-check-inline" data-bs-toggle="tooltip" data-bs-placement="bottom" title="MAHIERA GLOBAL SOLUTION">
                            <input class="form-check-input" type="radio" name="Quoheader" id="Quoheader1" value="1" checked>
-                           <label class="form-check-label" for="Quoheader1">
-                              <img src="<?= base_url("asset/image/logo/logo-1-200.png") ?>" class="rounded" width="50">
-                           </label>
+                           <label class="form-check-label" for="Quoheader1"><img src="<?= base_url("asset/image/logo/logo-1-200.png") ?>" class="rounded" width="50"></label>
                         </div>
-                        <div class="form-check form-check-inline">
+                        <div class="form-check form-check-inline" data-bs-toggle="tooltip" data-bs-placement="bottom" title="ROSTER REGULER JAKARTA">
+                           <input class="form-check-input" type="radio" name="Quoheader" id="Quoheader2" value="2">
+                           <label class="form-check-label" for="Quoheader2"><img src="<?= base_url("asset/image/logo/logo-2-200.png") ?>" class="rounded" width="50"></label>
+                        </div>
+                        <div class="form-check form-check-inline" data-bs-toggle="tooltip" data-bs-placement="bottom" title="BATA REGULER JAKARTA">
                            <input class="form-check-input" type="radio" name="Quoheader" id="Quoheader3" value="3">
                            <label class="form-check-label" for="Quoheader3"><img src="<?= base_url("asset/image/logo/logo-3-200.png") ?>" class="rounded" width="50"></label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                           <input class="form-check-input" type="radio" name="Quoheader" id="Quoheader4" value="4">
-                           <label class="form-check-label" for="Quoheader4"><img src="<?= base_url("asset/image/logo/logo-4-200.png") ?>" class="rounded" width="50"></label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                           <input class="form-check-input" type="radio" name="Quoheader" id="Quoheader5" value="5">
-                           <label class="form-check-label" for="Quoheader5"><img src="<?= base_url("asset/image/logo/logo-5-200.png") ?>" class="rounded" width="50"></label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                           <input class="form-check-input" type="radio" name="Quoheader" id="Quoheader6" value="6">
-                           <label class="form-check-label" for="Quoheader6"><img src="<?= base_url("asset/image/logo/logo-6-200.png") ?>" class="rounded" width="50"></label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                           <input class="form-check-input" type="radio" name="Quoheader" id="Quoheader7" value="7">
-                           <label class="form-check-label" for="Quoheader7"><img src="<?= base_url("asset/image/logo/logo-7-200.png") ?>" class="rounded" width="50"></label>
-                        </div>
+                        </div> 
                      </div>
                   </div>
                </div>
@@ -1584,4 +1570,10 @@
          });
       }
    });
+
+   var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+   var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+   })
+
 </script>

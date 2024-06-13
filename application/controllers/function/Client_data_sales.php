@@ -184,17 +184,17 @@ class Client_data_sales extends CI_Controller
       $datestart = $this->input->post("datestart");
       $dateend = $this->input->post("dateend");
       $store = $this->input->post("store");
-      $this->db->select("MsItemCatName,SUM(SalesDetailQty) as qty")
-         ->join("TblMsProduk", "TblMsProduk.MsProdukCatId=TblMsItemCategory.MsItemCatId", "LEFT OUTER")
+      $this->db->select("MsProdukCatName,SUM(SalesDetailQty) as qty")
+         ->join("TblMsProduk", "TblMsProduk.MsProdukCatId=TblMsProdukCategory.MsProdukCatId", "LEFT OUTER")
          ->join("TblSalesDetail", "TblSalesDetail.MsProdukId=TblMsProduk.MsProdukId", "LEFT OUTER")
          ->join("TblSales", "TblSales.SalesCode=TblSalesDetail.SalesDetailRef", "LEFT OUTER")
-         ->where_in("SalesStatusPayment", array(1, 2))->where("SalesDate >=", $datestart)->where("SalesDate <=", $dateend)->where("MsItemCatIsActive", 1);
+         ->where_in("SalesStatusPayment", array(1, 2))->where("SalesDate >=", $datestart)->where("SalesDate <=", $dateend)->where("MsProdukCatIsActive", 1);
       if ($store != "-") $this->db->where("MsWorkplaceId", $store);
-      $result = $this->db->group_by("TblMsProduk.MsProdukCatId")->get("TblMsItemCategory")->result();
+      $result = $this->db->group_by("TblMsProduk.MsProdukCatId")->get("TblMsProdukCategory")->result();
       $html = "";
       foreach ($result as $row) {
          $html .= '<div class="d-flex">
-                     <span class="flex-grow-1 text-secondary">' . $row->MsItemCatName . '</span>
+                     <span class="flex-grow-1 text-secondary">' . $row->MsProdukCatName . '</span>
                      <span>' . number_format($row->qty, 2) . '</span>
                   </div>';
       }

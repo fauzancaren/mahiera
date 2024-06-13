@@ -220,7 +220,7 @@ class Client_datatable extends CI_Controller
     function get_item(){
          // SETUP DATATABLE
         $data = array();
-        $dataproduk = $this->db->join("TblMsItemCategory","MsItemCatId=MsProdukCatId")->get("TblMsProduk")->result();
+        $dataproduk = $this->db->join("TblMsProdukCategory","TblMsProdukCategory.MsProdukCatId=TblMsProduk.MsProdukCatId")->get("TblMsProduk")->result();
         $no= 0;
         foreach ($dataproduk as $master) { 
             if (file_exists(getcwd() . "/asset/image/produk/" .  $master->MsProdukId."/".$master->MsProdukCode."_1.png")) {
@@ -232,7 +232,7 @@ class Client_datatable extends CI_Controller
             $row = array();
             $row["no"] = $no;
             $row["image"] = $urlimage;
-            $row["Category"] = $master->MsItemCatCode . ' - ' . $master->MsItemCatName;
+            $row["Category"] = $master->MsProdukCatCode . ' - ' . $master->MsProdukCatName;
             $row["Code"] = $master->MsProdukCode;
             $row["Name"] = $master->MsProdukName; 
             $row["Sale"] = ($master->MsProdukSale == 0 ? '<span onclick="enable_sales_click(' . $master->MsProdukId . ')" class="badge rounded-pill bg-danger pointer">Tidak Aktif</span>' : '<span onclick="disable_sales_click(' . $master->MsProdukId . ')" class="badge rounded-pill bg-success pointer">Aktif</span>');
@@ -242,7 +242,7 @@ class Client_datatable extends CI_Controller
                     <a onclick="view_click(' . $master->MsProdukId . ')" class="me-2 text-info pointer" title="View Data"><i class="fas fa-eye"></i></a>
                     <a onclick="edit_click(' . $master->MsProdukId . ')" class="me-2 text-warning pointer" title="Edit Data"><i class="fas fa-pencil-alt"></i></a>
                 </div>';
-            $row["detail"] = $this->db->join("TblMsBerat","TblMsProdukDetail.BeratId = TblMsBerat.BeratId")->join("TblMsSatuan","TblMsProdukDetail.SatuanId = TblMsSatuan.SatuanId")->where("MsProdukDetailRef",$master->MsProdukId)->get("TblMsProdukDetail")->result();
+            $row["detail"] = $this->db->join("TblMsProdukBerat","TblMsProdukDetail.BeratId = TblMsProdukBerat.BeratId")->join("TblMsProdukSatuan","TblMsProdukDetail.SatuanId = TblMsProdukSatuan.SatuanId")->where("MsProdukDetailRef",$master->MsProdukId)->get("TblMsProdukDetail")->result();
             $data[] = $row;
         }
         $output = array(
@@ -280,7 +280,7 @@ class Client_datatable extends CI_Controller
             $row["MsProdukName"] = $master->MsProdukName;
             $row["MsProdukVarian"] = $master->MsProdukVarian;
             $row["MsProdukImage"] = $urlimage; 
-            $row["MsProdukDetail"] = $this->db->join("TblMsSatuan","TblMsSatuan.SatuanId=TblMsProdukDetail.SatuanId")->where("MsProdukDetailRef",$master->MsProdukId)->get("TblMsProdukDetail")->result();
+            $row["MsProdukDetail"] = $this->db->join("TblMsProdukSatuan","TblMsProdukSatuan.SatuanId=TblMsProdukDetail.SatuanId")->where("MsProdukDetailRef",$master->MsProdukId)->get("TblMsProdukDetail")->result();
             $row["MsProdukStock"] =  $this->db->where("MsProdukId",$master->MsProdukId)->get("TblMsProdukStock")->result();
             $data[] = $row;
         } 

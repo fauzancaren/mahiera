@@ -147,19 +147,20 @@
             var col_head = "";
             var col_cell= "";
             for(var i = 0;i < d.detail.length;i++){
-                var dt_varian = d.detail[i].MsProdukDetailVarian.split("|");
+                var dt_varian = JSON.parse(d.detail[i].MsProdukDetailVarian); 
                 col_cell = "";
-                col_head = "";
-                for(var j = 0;j < dt_varian.length;j++){
-                    var data = dt_varian[j].split(":");  
-                    col_cell += `<td>${data[1]}</td>`;
-                    col_head += `<th>Varian ${data[0]}</th>`;
-                }
+                col_head = ""; 
+                for (const [key, val] of Object.entries(dt_varian)) {    
+                    col_cell += `<td>${val}</td>`;
+                    col_head += `<th>Varian ${key}</th>`;
+                } 
                 tbody += `
                         <tr>
                             ${col_cell}
                             <td>${d.detail[i].MsProdukDetailBerat} ${d.detail[i].BeratCode}</td>
-                            <td>${d.detail[i].MsProdukDetailPrice}</td>
+                            <td>${d.detail[i].MsProdukDetailpcsM2}</td>
+                            <td>Rp. ${number_format(d.detail[i].MsProdukDetailPrice)}</td>
+                            <td>Rp. ${number_format(d.detail[i].MsProdukDetailCogs)}</td>
                             <td>${d.detail[i].SatuanName}</td>
                             <td><a onclick="edit_detail_click(${d.detail[i].MsProdukDetailId})" class="me-2 text-warning pointer" title="Edit Data"><i class="fas fa-pencil-alt"></i></a></td>
                         </tr>`;
@@ -170,7 +171,9 @@
                     <tr>
                         ${col_head}
                         <th>Berat</th>
-                        <th>Harga</th>
+                        <th>Isi</th>
+                        <th>Harga Jual</th>
+                        <th>Harga Beli</th>
                         <th>Satuan</th>
                         <th><i class="fas fa-cog"></i></th>
                     </tr>

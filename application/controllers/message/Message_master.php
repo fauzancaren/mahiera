@@ -3456,15 +3456,61 @@ class Message_master extends CI_Controller
     }
     function data_item_master_edit($id)
     { 
-        $configfile = getcwd() . "/asset/image/produk/".$id; 
-        $myfiles = array_diff(scandir($configfile), array('.', '..'));  
+        try{
+            $configfile = getcwd() . "/asset/image/produk/".$id; 
+            $myfiles = array_diff(scandir($configfile), array('.', '..'));  
+        }catch(Exception $e) {
+            $myfiles = array();
+        }
+        
         $dataimage = array();
         foreach($myfiles as $file){ 
             $dataimage[] = 'data:image/png;base64,' . base64_encode(file_get_contents(getcwd() . "/asset/image/produk/".$id."/".$file));
         } 
-        $data["satuan"] = $this->db->get("TblMsSatuan")->result();
-        $data["berat"]= $this->db->get("TblMsBerat")->result();
+        $data["satuan"] = $this->db->get("TblMsProdukSatuan")->result();
+        $data["berat"]= $this->db->get("TblMsProdukBerat")->result();
         $data["produk"]= $this->db->where("MsProdukId",$id)->get("TblMsProduk")->row();
+        $var =  json_decode($data["produk"]->MsProdukVarian);
+        $varian = array();
+        foreach($var as $key=>$value)
+        {
+            $value_varian = array();
+            foreach($value as $val){
+                
+            }
+            $arr = array(
+                "varian" => $key,
+                "html" => '<div class="row row-table get-item my-2">
+                                <div class="col-12 col-md-3">
+                                    <select class="custom-select custom-select-sm form-select form-select-sm selectvarian" placeholder="pilih varian" style="width:100%" disabled>
+                                        <option value="1" select>Vendor</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-8">
+                                    <select class="custom-select custom-select-sm form-control form-control-sm selectvarianvalue" style="width:100%" multiple="multiple" data-type="Vendor" required></select>
+                                </div>
+
+                                <div class="col-auto px-0">
+                                    <span class="badge text-bg-secondary">Default</span>
+                                </div>
+                            </div>',
+                "value" => $key, 
+            );
+          
+            arr["value"] = [
+                                {
+                                    "id": "1",
+                                    "text": "TKI",
+                                    "html": "<span class=\"fw-bold\">TKI - TERRAKOTA INDONESIA</span>",
+                                    "selected": true
+                                }
+                            ];
+            array_push($varian,$arr); 
+        } 
+        $data["varian"] = $varian;
+
+
+
         $data["produkdetail"]= $this->db->where("MsProdukDetailRef",$id)->get("TblMsProdukDetail")->result();
         $data["produkimage"]=$dataimage;
         echo $this->load->view('message/master/item_edit', $data, TRUE);

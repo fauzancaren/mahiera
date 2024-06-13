@@ -12,9 +12,9 @@
                         <select class="form-select form-select-sm" id="category-data-item" aria-label="Floating label select example">
                             <option selected value="0">Pilih Semua Kategori</option>
                             <?php
-                                $data_category = $this->db->where("MsItemCatIsSales",1)->get("TblMsItemCategory")->result();
+                                $data_category = $this->db->where("MsProdukCatIsActive",1)->get("TblMsProdukCategory")->result();
                                 foreach($data_category as $row){
-                                    echo "<option value='".$row->MsItemCatId."'>".$row->MsItemCatCode." - ".$row->MsItemCatName."</option>";
+                                    echo "<option value='".$row->MsProdukCatId."'>".$row->MsProdukCatCode." - ".$row->MsProdukCatName."</option>";
                                 }
                             ?> 
                         </select>  

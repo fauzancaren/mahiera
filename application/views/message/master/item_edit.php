@@ -1,5 +1,5 @@
 <div class="modal fade " id="modal-action"  data-bs-keyboard="false" data-bs-backdrop="static">
-    <div class="modal-dialog modal-lg modal-dialog-centered ">
+    <div class="modal-dialog modal-xl modal-dialog-centered ">
         <div class="modal-content" name="form-action">
             <div class="modal-header bg-dark">
                 <h6 class="modal-title text-white"><i class="fas fa-pencil-alt text-warning" aria-hidden="true"></i> &nbsp;Edit Data Item Master</h5>
@@ -12,9 +12,13 @@
                     </div>
                 </div>  
                 <div class="row p-2"> 
-                    <input type="file" class="d-none" accept="image/*" id="upload-produk" onclick="initialize()"> 
+                    <input type="file" class="d-none" accept="image/*" id="upload-produk"> 
                     <div class="col-sm-12 d-flex flex-wrap">
-                        <div class="d-flex flex-wrap" id="list-produk"></div>
+                            <div class="d-flex flex-wrap" id="list-produk"></div>
+                            <div class="image-default-obi" id="img-produk">
+                                <i class="fas fa-image"></i>
+                                <span>Tambah Foto</span>
+                            </div>
                     </div>
                 </div> 
                 <div class="row mb-1 align-items-center">
@@ -42,9 +46,9 @@
                             <div class="col-sm-8">
                                 <select class="custom-select custom-select-sm form-control form-control-sm" id="MsProdukCatId" name="MsProdukCatId" style="width:100%" disabled>
                                 <?php
-                                $db = $this->db->where("MsItemCatIsActive",1)->get("TblMsItemCategory")->result();
+                                $db = $this->db->where("MsProdukCatIsActive",1)->get("TblMsProdukCategory")->result();
                                 foreach ($db as $key) {
-                                    echo '<option value="' . $key->MsItemCatId . '" data-kode="' . $key->MsItemCatCode . '" '.($produk->MsProdukCatId == $key->MsItemCatId ? "selected" : "" ).'>' . $key->MsItemCatCode . ' - ' . $key->MsItemCatName . '</option>';
+                                    echo '<option value="' . $key->MsProdukCatId . '" data-kode="' . $key->MsProdukCatCode . '" '.($produk->MsProdukCatId == $key->MsProdukCatId ? "selected" : "" ).'>' . $key->MsProdukCatCode . ' - ' . $key->MsProdukCatName . '</option>';
                                 }
                                 ?>
                                 </select>
@@ -157,21 +161,8 @@
 
     $(".custom-select").select2({
         dropdownParent: $("#modal-action .modal-content")
-    });
+    }); 
 
-    $("#MsProdukCatId").on("change",function(){
-        // $.ajax({
-        //     method: "POST",
-        //     url: "<?= site_url("function/client_data_master/next_kode_item") ?>",
-        //     data : {
-        //         "MsProdukCatId": $("#MsProdukCatId").val(),
-        //         "MsProdukCatCode": $("#MsProdukCatId").find(":selected").data("kode"),
-        //     },
-        //     success: function(data) {
-        //         $("#MsProdukCode").val(data);
-        //     }
-        // });
-    });
     var doubleinputs = Array.from(document.getElementsByClassName("double"));
     doubleinputs.forEach(function (doubleinput) {
         new Cleave(doubleinput, {
@@ -193,35 +184,38 @@
 
     $("#MsProdukCatId").trigger("change");
 
-    /* function Image */
-
-    var data_image = <?= JSON_ENCODE($produkimage) ?>;
-    function load_data_image(){
-        var html = "";
-        for(var i = 0; i < data_image.length;i++){
-            html += `<div class="image-default-obi border">
+    /* function Image */ 
+    $("#img-produk").on('click',function(){
+        $("#upload-produk").trigger("click");
+    })   
+    $("#upload-produk").on('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function() {
+                $("#list-produk").append(`<div class="image-default-obi border">
+                                <img src="${reader.result}"> 
+                                <div class="action">
+                                    <a class="btn btn-sm btn-white p-1" onclick="crop_image(this)"><i class="fas fa-crop-alt"></i></a>
+                                    <a class="btn btn-sm btn-white p-1" onclick="delete_image(this)"><i class="fas fa-trash"></i></a>
+                                </div>
+                        </div>`) 
+            }
+        }
+    });
+    var data_image = <?= JSON_ENCODE($produkimage) ?>; 
+    for(var i = 0; i < data_image.length;i++){
+        $("#list-produk").append(`<div class="image-default-obi border">
                             <img src="${data_image[i]}"> 
                             <div class="action">
-                                <a class="btn btn-sm btn-white p-1" onclick="crop_image(${i})"><i class="fas fa-crop-alt"></i></a>
-                                <a class="btn btn-sm btn-white p-1" onclick="delete_image(${i})"><i class="fas fa-trash"></i></a>
+                                <a class="btn btn-sm btn-white p-1" onclick="crop_image(this)"><i class="fas fa-crop-alt"></i></a>
+                                <a class="btn btn-sm btn-white p-1" onclick="delete_image(this)"><i class="fas fa-trash"></i></a>
                             </div>
-                    </div> `;
-        }
-        html += `<div class="image-default-obi" id="img-produk">
-                    <i class="fas fa-image"></i>
-                    <span>Tambah Foto</span>
-                </div> `;
-        $("#list-produk").html(html);
-        $("#img-produk").click(function(){
-            $("#upload-produk").trigger("click");
-        })  
-    }
-    function initialize() {
-        document.body.onfocus = checkIt; 
+                    </div>`)  
     }  
-    load_data_image();// Start upload preview image
+     
         
-    // End upload preview image 
     var $uploadCrop, tempFilename, rawImg, imageId; 
     $uploadCrop = $('#crop-image').croppie({
         viewport: {
@@ -233,13 +227,14 @@
         enableExif: true,
         enableOrientation: true
     });
-    crop_image = function(id){ 
+    crop_image = function(el){ 
+        var image_crop = $(el).parent().parent().find('img');
         var flip = 0;
         $('#modal-edit').modal('show');
         
         $('#modal-edit').on('shown.bs.modal', function(){ 
             $uploadCrop.croppie('bind', {
-                url: data_image[id]
+                url: $(image_crop).attr('src')
             }).then(function(){
                 console.log('jQuery bind complete');
             });
@@ -250,7 +245,7 @@
         flip_image = function(val){
             flip = flip == 0 ? val : 0;
             $uploadCrop.croppie('bind', { 
-                url: data_image[id],
+                url: $(el).parent().parent().find('img').attr('src'),
                 orientation: flip
             });
         } 
@@ -260,44 +255,79 @@
                 type: 'base64',
                 format: 'png',
                 size: {width: 400, height: 400}
-            }).then(function (resp) {
-                console.log("croppie",id);
-                data_image[id] = resp;
-                load_data_image(); 
+            }).then(function (resp) { 
+                $(image_crop).attr('src',resp) 
                 $('#modal-edit').modal('hide');
             });
         });
     }
-    delete_image = function(id){
-        data_image.splice(id, 1);
-        load_data_image();
-    }
-    async function checkIt() { 
-        if (document.getElementById('upload-produk').value.length) { 
-            var base64 = await converImageToBase64("upload-produk");  
-            data_image.push(base64);
-            load_data_image();
-        }
-        document.body.onfocus = null; 
-    }      
-    async function converImageToBase64(inputId) {
-        let image = $('#'+inputId)[0]['files'] 
-        if (image && image[0]) {
-            const reader = new FileReader();
-
-            return new Promise(resolve => {
-                reader.onload = ev => {
-                    resolve(ev.target.result)
-                }
-                reader.readAsDataURL(image[0])
-            })
-        }
-    }
-
+    delete_image = function(el){
+        $(el).parent().parent().remove();
+    }  
 
 
     var data_varian = [];  
     // Insert data langsung ke select2 Varian
+    console.log('<?= json_encode($varian) ?>');
+    var varian = JSON.parse('<?= $produk->MsProdukVarian ?>');
+    for (const [key, val] of Object.entries(varian)) {   
+        if(key == "Vendor"){ 
+            var arr = [];
+            arr["html"] = `<div class="row row-table get-item my-2">
+                                <div class="col-12 col-md-3">
+                                    <select class="custom-select custom-select-sm form-select form-select-sm selectvarian" placeholder="pilih varian" style="width:100%" disabled>
+                                        <option value="1" select>Vendor</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-8">
+                                    <select class="custom-select custom-select-sm form-control form-control-sm selectvarianvalue" style="width:100%" multiple="multiple" data-type="Vendor" required></select>
+                                </div>
+        
+                                <div class="col-auto px-0">
+                                    <span class="badge text-bg-secondary">Default</span>
+                                </div>
+                            </div>`;
+            arr["varian"] = "Vendor";
+            var val_arr = [];
+            for(var i = 0;i < val.length;i++){
+                val_arr.push({
+
+                })
+                console.log(val[i]);
+            }
+            arr["value"] = [
+                                {
+                                    "id": "1",
+                                    "text": "TKI",
+                                    "html": "<span class=\"fw-bold\">TKI - TERRAKOTA INDONESIA</span>",
+                                    "selected": true
+                                }
+                            ];
+            data_varian.push(arr) 
+        }else{
+            var arr = [];
+            arr["html"] = `<div class="row row-table get-item my-2">
+                                <div class="col-12 col-md-3">
+                                    <select class="custom-select custom-select-sm form-select form-select-sm selectvarian" placeholder="pilih varian" style="width:100%" disabled>
+                                        <option value="1" select>${key}</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-8">
+                                    <select class="custom-select custom-select-sm form-control form-control-sm selectvarianvalue" style="width:100%" multiple="multiple" data-type="${key}" required></select>
+                                </div> 
+                                <div class="col-auto px-0 align-self-end ms-auto action-table-single-optional">
+                                        <a onclick="hapus_varian('${key}',true)" class="text-danger pointer" title="Hapus Item"><i class="fas fa-trash-alt fa-lg"></i></a>
+                                    </div> 
+                            </div>`;
+            arr["varian"] = key;
+            for(var i = 0;i < val.length;i++){
+                console.log(val[i]);
+            }
+            arr["value"] = [ ];
+            data_varian.push(arr) 
+        }
+    }
+    
     <?php 
         $data = explode(";",$produk->MsProdukVarian);
         foreach($data as $varian){ 

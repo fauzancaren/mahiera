@@ -1,5 +1,5 @@
 <div class="modal fade " id="modal-action"  data-bs-keyboard="false" data-bs-backdrop="static">
-    <div class="modal-dialog modal-lg modal-dialog-centered ">
+    <div class="modal-dialog modal-xl modal-dialog-centered ">
         <div class="modal-content" name="form-action">
             <div class="modal-header bg-dark">
                 <h6 class="modal-title text-white"><i class="fas fa-plus text-success" aria-hidden="true"></i> &nbsp;Tambah Data Item Master</h5>
@@ -143,7 +143,46 @@
         </div>
     </div>
 </div>
-
+<div class="modal fade " id="modal-vendor"  data-bs-keyboard="false" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered ">
+        <form class="modal-content" name="form-action">
+            <div class="modal-header bg-dark">
+                <h6 class="modal-title text-white"><i class="fas fa-plus text-success" aria-hidden="true"></i> &nbsp;Tambah Data Vendor</h5>
+                <button type="button" class="btn-close " data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div  class="row justify-content-center">
+                    <div class="col-10">
+                        <div class="row mb-1 align-items-center">
+                            <label for="MsVendorIsActive" class="col-sm-3 col-form-label">Status<sup class="error">&nbsp;*</sup></label>
+                            <div class="col-sm-9">
+                                <div class="form-check form-switch">
+                                    <input id="MsVendorIsActive" name="MsVendorIsActive" class="form-check-input" type="checkbox" checked>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-1 align-items-center">
+                            <label for="MsVendorCode" class="col-sm-3 col-form-label">Kode<sup class="error">&nbsp;*</sup></label>
+                            <div class="col-sm-9">
+                                <input id="MsVendorCode" name="MsVendorCode" type="text" class="form-control form-control-sm" value="">
+                            </div>
+                        </div>
+                        <div class="row mb-1 align-items-center">
+                            <label for="MsVendorName" class="col-sm-3 col-form-label">Nama<sup class="error">&nbsp;*</sup></label>
+                            <div class="col-sm-9">
+                                <input id="MsVendorName" name="MsVendorName" type="text" class="form-control form-control-sm" value="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success"   id="btn-submit-vendor"        >Simpan</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </form>
+    </div>
+</div>
 <script>  
     var req_status_add = 0;
     var checkArrays = Array.from(document.getElementsByClassName("form-check-input"));  
@@ -458,6 +497,73 @@
     }
     add_value_vendor = function(val){
         console.log(val);
+        $("#MsVendorCode").val("");
+        $("#MsVendorName").val("");
+        $("#modal-vendor").modal("show");
+        
+         
+        var req_status_add = 0; 
+        
+        $(function() { 
+            $("form[name='form-action']").validate({
+                rules: {
+                    MsVendorCode: {
+                        "required": true,
+                        "remote": "<?= site_url("function/client_data_master/validate_kode_vendor") ?>",
+                    },
+                    MsVendorName: "required",
+                },
+                messages: {
+                    MsVendorCode: { 
+                        required: "Masukan kode Vendor",
+                        remote: "Kode Vendor sudah ada"
+                    },
+                    MsVendorName: "Masukan Nama Vendor",
+                },
+                submitHandler: function(form) {
+                    if(!req_status_add){
+                        $("#btn-submit-vendor").html('<i class="fas fa-circle-notch fa-spin"></i> Loading');
+                        $.ajax({
+                            method: "POST",
+                            url: "<?= site_url("function/client_data_master/data_vendor_add") ?>",
+                            data: $("form[name='form-action']").serialize(),
+                            before: function(){ 
+                                req_status_add = 1;
+                            },
+                            success: function(data) {
+                                req_status_add = 0;
+                                $("#btn-submit-vendor").html("Simpan");
+                                
+                                if(data){
+                                    Swal.fire({
+                                        icon: 'success',
+                                        text: 'Tambah data berhasil',
+                                        showConfirmButton: false,
+                                            allowOutsideClick: false,
+                                            allowEscapeKey: false,
+                                        timer: 1500,
+                                    }).then((result) => {
+                                        if (result.dismiss === Swal.DismissReason.timer) {
+                                            $("#modal-vendor").modal("hide");
+                                        }
+                                    });
+                                }else{
+                                    Swal.fire({
+                                        icon: 'error',
+                                        text: 'Tambah data gagal',
+                                        showConfirmButton: false,
+                                            allowOutsideClick: false,
+                                            allowEscapeKey: false,
+                                        timer: 1500
+                                    });
+                                }
+                            }
+                        });
+                        return false;
+                    }
+                }
+            });
+        }); 
     }
 
 
@@ -557,10 +663,12 @@
             }     
             data_varian_new.push({
                 "varian": varian,
+                "pcsM2": get_arr_val_old(varian,"pcsM2"),
                 "berat": get_arr_val_old(varian,"berat"),
                 "berattype": get_arr_val_old(varian,"berattype"),
                 "satuan": get_arr_val_old(varian,"satuan"),
-                "harga": get_arr_val_old(varian,"harga"),
+                "hargajual": get_arr_val_old(varian,"hargajual"),
+                "hargabeli": get_arr_val_old(varian,"hargabeli"),
             })
         }     
         var headerhtml = `<thead><tr>`;
@@ -574,7 +682,11 @@
                     detailhtml += `<td scope="col">${val}</td>`;
                 }
             });  
-            headerhtml += `<th scope="col" style="width:10rem">Berat</th><th scope="col" style="width:8rem">Satuan</th><th scope="col" style="width:8rem">Harga</th>`;
+            headerhtml += `<th scope="col" style="width:10rem">Berat</th>
+                            <th scope="col" style="width:8rem">Satuan</th>
+                            <th scope="col" style="width:8rem">Isi /M2</th>
+                            <th scope="col" style="width:8rem">Harga Jual</th>
+                            <th scope="col" style="width:8rem">Harga Beli</th>`;
             detailhtml += `<td scope="col">
                                 <div class="input-group"> 
                                     <input type="text" class="form-control form-control-sm weight"  placeholder="" value="${data_varian_new[i]["berat"]}" data-id="${i}">
@@ -587,7 +699,13 @@
                                 <select class="custom-select custom-select-sm form-select form-select-sm selectsatuan" data-id="${i}" placeholder="" style="width:100%">${data_option_satuan}</select>
                             </td>`;
             detailhtml += `<td scope="col">
-                                <input type="text" class="form-control form-control-sm price d-inline-block me-2" data-id="${i}" value="${data_varian_new[i]["harga"]}">
+                                <input type="text" class="form-control form-control-sm d-inline-block me-2 pcsM2" data-id="${i}" data-type="pcsM2" value="${data_varian_new[i]["pcsM2"]}">
+                            </td>`;
+            detailhtml += `<td scope="col">
+                                <input type="text" class="form-control form-control-sm price d-inline-block me-2" data-id="${i}" data-type="hargajual" value="${data_varian_new[i]["hargajual"]}">
+                            </td>`;
+            detailhtml += `<td scope="col">
+                                <input type="text" class="form-control form-control-sm price d-inline-block me-2" data-id="${i}"  data-type="hargabeli" value="${data_varian_new[i]["hargabeli"]}">
                             </td>`;
             detailhtml += `</tr>`;
         }  
@@ -597,7 +715,7 @@
             $('#list_varian').html(`<div class="text-center"><i class="fas fa-ban pe-2"></i>Lengkapi data varian terlebih dahulu</div>`);
         }else{ 
             $('#list_varian').html(`<table class="table table-hover table-sm">${headerhtml}${detailhtml}</table>`);
-            $( ".price" ).each(function() {
+            $(".price").each(function() {
                 var cleave = new Cleave($(this),{
                     numeral: true,
                     delimeter: ",",
@@ -605,10 +723,25 @@
                     numeralThousandGroupStyle:"thousand"
                 });
                 $(this).change(function(){ 
-                    data_varian_new[$(this).data("id")]["harga"] = cleave.getRawValue();
+                    if($(this).data("type") == "hargajual"){ 
+                        data_varian_new[$(this).data("id")]["hargajual"] = cleave.getRawValue();
+                    }
+                    if($(this).data("type") == "hargabeli"){
+                        data_varian_new[$(this).data("id")]["hargabeli"] = cleave.getRawValue(); 
+                    }
                 });
-                cleave.getRawValue(data_varian_new[$(this).data("id")]["harga"]);
+                if($(this).data("type") == "hargajual"){ 
+                    cleave.getRawValue(data_varian_new[$(this).data("id")]["hargajual"]);
+                }
+                if($(this).data("type") == "hargabeli"){ 
+                    cleave.getRawValue(data_varian_new[$(this).data("id")]["hargabeli"]);
+                }
             });  
+            $(".pcsM2").each(function(){
+                $(this).change(function(){ 
+                    data_varian_new[$(this).data("id")]["pcsM2"] = $(this).val();
+                });
+            });
             $( ".weight" ).each(function() {
                 var cleave = new Cleave($(this),{
                     numeral: true,
@@ -640,10 +773,7 @@
                     data_varian_new[$(this).data("id")]["satuan"] = data.id; 
                 }).val(data_varian_new[$(this).data("id")]["satuan"]).trigger("change.select2"); 
             });  
-        }
-
-      
-
+        }  
     };
     
     hapus_varian = async function(varian, newitem) {
@@ -712,16 +842,17 @@
             });
             return false;
         }
-        var datavar = "";
+        var datavar = "{";
         data_varian.forEach(function(data){
-            datavar += data["varian"] + ":";
+            datavar += '"' + data["varian"] + '":[';
             data["value"].forEach(function(data2){
-                datavar += data2["text"] + "|";
+                datavar +=  '"' + data2["text"] +  '",';
             }) 
             datavar = datavar.slice(0,-1);
-            datavar +=  ";";
+            datavar +=  '],';
         })
-        console.log(datavar)
+        datavar = datavar.slice(0,-1);
+        datavar +=  "}"; 
         var data_header = {
             "MsProdukCatId": $("#MsProdukCatId").val(),
             "MsProdukStock": ($("#MsProdukStock").is(":checked") ? "1" : "0"),
@@ -734,23 +865,29 @@
 
         var data_detail = [];
         data_varian_new.forEach(function(data){
-            var datadetailvar = "";
+            var datadetailvar = "{";
             $.each(data["varian"], function(key, value) { 
                 for (const [key, val] of Object.entries(value)) {   
-                    datadetailvar += key + ":"  + val + "|"; 
+                    datadetailvar += '"' + key + '": "'  + val + '",'; 
                 }
             });  
             datadetailvar = datadetailvar.slice(0,-1); 
+            datadetailvar += "}";
             var detail = {
-                "MsProdukDetailPrice":data["harga"], 
+                "MsProdukDetailPrice":data["hargajual"], 
+                "MsProdukDetailCogs":data["hargabeli"], 
                 "MsProdukVarian":datadetailvar,
                 "BeratId":data["berattype"],
                 "BeratQty":data["berat"],
                 "SatuanId":data["satuan"],
+                "MsProdukDetailpcsM2":data["pcsM2"],
             }
             data_detail.push(detail);
         }); 
-
+        var data_image = [];
+        $("#list-produk").find("img").each(function(){
+            data_image.push($(this).attr("src")); 
+        }) 
         /* -------------------------------------------------     SEND DATA SERVER    ---------------------------------------------- */
         $.ajax({
             method: "POST", 
@@ -789,5 +926,7 @@
                 }
             } 
         });
-    })
+    });
+
+
 </script>
