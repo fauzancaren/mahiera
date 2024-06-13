@@ -288,6 +288,14 @@
                                 </div>
                             </div>`;
             arr["varian"] = "Vendor";
+            arr["value"] = [
+                                {
+                                    "id": "1",
+                                    "text": "TKI",
+                                    "html": "<span class=\"fw-bold\">TKI - TERRAKOTA INDONESIA</span>",
+                                    "selected": true
+                                }
+                            ];
             var val_arr = [];
             for(var i = 0;i < val.length;i++){
                 val_arr.push({

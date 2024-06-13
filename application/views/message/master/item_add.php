@@ -143,6 +143,59 @@
         </div>
     </div>
 </div>
+<div class="modal fade " id="modal-varian"  data-bs-keyboard="false" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered ">
+        <form class="modal-content" name="form-varian">
+            <div class="modal-header bg-dark">
+                <h6 class="modal-title text-white"><i class="fas fa-plus text-success" aria-hidden="true"></i> &nbsp;Tambah Varian Baru</h5>
+                <button type="button" class="btn-close " data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div  class="row justify-content-center">
+                    <div class="col-10"> 
+                        <div class="row mb-1 align-items-center">
+                            <label for="VarianName" class="col-sm-3 col-form-label">Nama<sup class="error">&nbsp;*</sup></label>
+                            <div class="col-sm-9">
+                                <input id="VarianName" name="VarianName" type="text" class="form-control form-control-sm" value="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success"   id="btn-submit-varian"        >Simpan</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="modal fade " id="modal-varian-value"  data-bs-keyboard="false" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered ">
+        <form class="modal-content" name="form-varian-value">
+            <div class="modal-header bg-dark">
+                <h6 class="modal-title text-white"><i class="fas fa-plus text-success" aria-hidden="true"></i> &nbsp;Tambah Varian Detail Baru</h5>
+                <button type="button" class="btn-close " data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div  class="row justify-content-center">
+                    <div class="col-10"> 
+                        <input id="VarianNameRef" name="VarianNameRef" type="text" class="form-control form-control-sm d-none" value="">
+                        <div class="row mb-1 align-items-center">
+                            <label for="MsProdukVarianDetailName" class="col-sm-3 col-form-label">Nama<sup class="error">&nbsp;*</sup></label>
+                            <div class="col-sm-9">
+                                <input id="MsProdukVarianDetailName" name="MsProdukVarianDetailName" type="text" class="form-control form-control-sm" value="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success"   id="btn-submit-varian"        >Simpan</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </form>
+    </div>
+</div>
 <div class="modal fade " id="modal-vendor"  data-bs-keyboard="false" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered ">
         <form class="modal-content" name="form-action">
@@ -397,7 +450,10 @@
                     return data['text'];
                 }
             })
-            $(".selectvarian").on("select2:select", function(e) {
+            $(".selectvarian").on("select2:selecting", function(e) {  
+                var data = e.params.args.data; 
+                if(data.id == 0) e.preventDefault(); 
+            }).on("select2:select", function(e) {
                 var data = e.params.data; 
                 var htmlItem = `<div class="row row-table get-item my-2">
                         <div class="col-12 col-md-3">
@@ -495,8 +551,62 @@
         });
         load_data_list_varian();
     }
-    add_value_vendor = function(val){
-        console.log(val);
+    add_varian = function(){
+        $("#modal-varian").modal("show");
+        $(function() { 
+            $("form[name='form-varian']").validate({
+                rules: { 
+                    VarianName: "required",
+                },
+                messages: { 
+                    VarianName: "Masukan Nama Varian",
+                },
+                submitHandler: function(form) {
+                    if(!req_status_add){
+                        $("#btn-submit-varian").html('<i class="fas fa-circle-notch fa-spin"></i> Loading');
+                        $.ajax({
+                            method: "POST",
+                            url: "<?= site_url("function/client_data_master/data_varian_add") ?>",
+                            data: $("form[name='form-varian']").serialize(),
+                            before: function(){ 
+                                req_status_add = 1;
+                            },
+                            success: function(data) {
+                                req_status_add = 0;
+                                $("#btn-submit-varian").html("Simpan");
+                                
+                                if(data){
+                                    Swal.fire({
+                                        icon: 'success',
+                                        text: 'Tambah data berhasil',
+                                        showConfirmButton: false,
+                                            allowOutsideClick: false,
+                                            allowEscapeKey: false,
+                                        timer: 1500,
+                                    }).then((result) => {
+                                        if (result.dismiss === Swal.DismissReason.timer) {
+                                            $("#modal-varian").modal("hide");
+                                        }
+                                    });
+                                }else{
+                                    Swal.fire({
+                                        icon: 'error',
+                                        text: 'Tambah data gagal',
+                                        showConfirmButton: false,
+                                            allowOutsideClick: false,
+                                            allowEscapeKey: false,
+                                        timer: 1500
+                                    });
+                                }
+                            }
+                        });
+                        return false;
+                    }
+                }
+            });
+        }); 
+    }
+    add_value_vendor = function(val){ 
         $("#MsVendorCode").val("");
         $("#MsVendorName").val("");
         $("#modal-vendor").modal("show");
@@ -545,6 +655,66 @@
                                     }).then((result) => {
                                         if (result.dismiss === Swal.DismissReason.timer) {
                                             $("#modal-vendor").modal("hide");
+                                        }
+                                    });
+                                }else{
+                                    Swal.fire({
+                                        icon: 'error',
+                                        text: 'Tambah data gagal',
+                                        showConfirmButton: false,
+                                            allowOutsideClick: false,
+                                            allowEscapeKey: false,
+                                        timer: 1500
+                                    });
+                                }
+                            }
+                        });
+                        return false;
+                    }
+                }
+            });
+        }); 
+    }
+    add_value = function(val){ 
+        $("#MsProdukVarianDetailName").val("");
+        $("#VarianNameRef").val(val);
+        
+        $("#modal-varian-value").modal("show");
+        var req_status_add = 0; 
+        
+        $(function() { 
+            $("form[name='form-varian-value']").validate({
+                rules: { 
+                    MsProdukVarianDetailName: "required",
+                },
+                messages: { 
+                    MsProdukVarianDetailName: "Masukan Nama Varian",
+                },
+                submitHandler: function(form) {
+                    if(!req_status_add){
+                        $("#btn-submit-varian").html('<i class="fas fa-circle-notch fa-spin"></i> Loading');
+                        $.ajax({
+                            method: "POST",
+                            url: "<?= site_url("function/client_data_master/data_varian_value_add") ?>",
+                            data: $("form[name='form-varian-value']").serialize(),
+                            before: function(){ 
+                                req_status_add = 1;
+                            },
+                            success: function(data) {
+                                req_status_add = 0;
+                                $("#btn-submit-varian").html("Simpan");
+                                
+                                if(data){
+                                    Swal.fire({
+                                        icon: 'success',
+                                        text: 'Tambah data berhasil',
+                                        showConfirmButton: false,
+                                            allowOutsideClick: false,
+                                            allowEscapeKey: false,
+                                        timer: 1500,
+                                    }).then((result) => {
+                                        if (result.dismiss === Swal.DismissReason.timer) {
+                                            $("#modal-varian-value").modal("hide");
                                         }
                                     });
                                 }else{

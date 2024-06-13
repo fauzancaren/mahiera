@@ -1227,8 +1227,29 @@ class Client_data_master extends CI_Controller
         echo ($this->db->affected_rows() != 1) ? false : true;
         exit;
     }
+    public function data_varian_add()
+    {
+        $data = array(
+            "VarianName" => $this->input->post("VarianName"), 
+        );
 
+        $this->db->insert('TblMsProdukVarian', $data);
 
+        echo ($this->db->affected_rows() != 1) ? false : true;
+        exit;
+    }
+    public function data_varian_value_add(){
+        $datavarian = $this->db->where("VarianName",$this->input->post("VarianNameRef"))->get("TblMsProdukVarian")->row();
+        $data = array(
+            "MsProdukVarianDetailRef" => $datavarian->VarianId, 
+            "MsProdukVarianDetailName" => $this->input->post("MsProdukVarianDetailName"), 
+        );
+
+        $this->db->insert('TblMsProdukVarianDetail', $data);
+
+        echo ($this->db->affected_rows() != 1) ? false : true;
+        exit;
+    }
     public function get_data_master_item($vendor = null)
     {
         $search = isset($_REQUEST['search']) ? $_REQUEST['search'] : NULL;
@@ -1367,6 +1388,15 @@ class Client_data_master extends CI_Controller
             $list[$key]['html'] = $htmlItem; 
             $key++;
         }
+        $list[$key]['id'] = "0";
+        $list[$key]['text'] = "0";
+        $list[$key]['html'] =
+        '<button class="btn btn-success btn-sm py-1 me-1 rounded-pill" type="button" style="font-size: 0.6rem;" onclick="add_varian(\''.$search.'\')">
+                            <i class="fas fa-plus" aria-hidden="true"></i>
+                            <span class="fw-bold">
+                                &nbsp;Tambah Varian Baru
+                            </span>
+                        </button>';
         echo json_encode($list);
         exit;
     }
@@ -1429,15 +1459,14 @@ class Client_data_master extends CI_Controller
             }
             echo json_encode($list);
             exit;
-        }  
-        if($type=="Warna"){ 
-            $query = $this->db->like("WarnaName",$search)->get("TblMsProdukWarna")->result();
+        }else{
+            $query = $this->db->join("TblMsProdukVarian","TblMsProdukVarian.VarianId = TblMsProdukVarianDetail.MsProdukVarianDetailRef")->like("MsProdukVarianDetailName",$search)->where("VarianName",$type)->get("TblMsProdukVarianDetail")->result();
             $list = array();
             $key = 0;
             foreach ($query as $row) {
-                $htmlItem = '<span class="fw-bold">' . $row->WarnaName .'</span>';
-                $list[$key]['id'] = $row->WarnaId;
-                $list[$key]['text'] = $row->WarnaName;
+                $htmlItem = '<span class="fw-bold">' . $row->MsProdukVarianDetailName .'</span>';
+                $list[$key]['id'] = $row->MsProdukVarianDetailId;
+                $list[$key]['text'] = $row->MsProdukVarianDetailName;
                 $list[$key]['html'] = $htmlItem; 
                 $key++;
             }
@@ -1445,41 +1474,16 @@ class Client_data_master extends CI_Controller
                 $list[$key]['id'] = "0";
                 $list[$key]['text'] = "0";
                 $list[$key]['html'] =
-                '<button class="btn btn-success btn-sm py-1 me-1 rounded-pill" type="button" style="font-size: 0.6rem;" onclick="add_value_warna(\''.$search.'\')">
+                '<button class="btn btn-success btn-sm py-1 me-1 rounded-pill" type="button" style="font-size: 0.6rem;" onclick="add_value(\''.$type.'\')">
                                     <i class="fas fa-plus" aria-hidden="true"></i>
                                     <span class="fw-bold">
-                                        &nbsp;Tambah Warna Baru
+                                        &nbsp;Tambah '.$type.' Baru
                                     </span>
                                 </button>';
             }
             echo json_encode($list);
             exit;
-        }
-        if($type=="Ukuran"){ 
-            $query = $this->db->like("SizeName",$search)->get("TblMsProdukSize")->result();
-            $list = array();
-            $key = 0;
-            foreach ($query as $row) {
-                $htmlItem = '<span class="fw-bold">' . $row->SizeName .'</span>';
-                $list[$key]['id'] = $row->SizeId;
-                $list[$key]['text'] = $row->SizeName;
-                $list[$key]['html'] = $htmlItem; 
-                $key++;
-            }
-            if($key == 0){
-                $list[$key]['id'] = "0";
-                $list[$key]['text'] = "0";
-                $list[$key]['html'] =
-                '<button class="btn btn-success btn-sm py-1 me-1 rounded-pill" type="button" style="font-size: 0.6rem;" onclick="add_value_ukuran(\''.$search.'\')">
-                                    <i class="fas fa-plus" aria-hidden="true"></i>
-                                    <span class="fw-bold">
-                                        &nbsp;Tambah Ukuran Baru
-                                    </span>
-                                </button>';
-            }
-            echo json_encode($list);
-            exit;
-        }
+        } 
       
     }
     public function get_bom_detail($id)

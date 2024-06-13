@@ -3475,8 +3475,7 @@ class Message_master extends CI_Controller
         foreach($var as $key=>$value)
         {
             $value_varian = array();
-            foreach($value as $val){
-                
+            foreach($value as $val){ 
             }
             $arr = array(
                 "varian" => $key,
@@ -3495,16 +3494,7 @@ class Message_master extends CI_Controller
                                 </div>
                             </div>',
                 "value" => $key, 
-            );
-          
-            arr["value"] = [
-                                {
-                                    "id": "1",
-                                    "text": "TKI",
-                                    "html": "<span class=\"fw-bold\">TKI - TERRAKOTA INDONESIA</span>",
-                                    "selected": true
-                                }
-                            ];
+            ); 
             array_push($varian,$arr); 
         } 
         $data["varian"] = $varian;
