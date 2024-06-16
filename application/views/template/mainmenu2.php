@@ -145,6 +145,44 @@
 		Array.prototype.diff = function(a) {
 			return this.filter(function(i) {return a.indexOf(i) < 0;});
 		};
+
+		function perbedaanArray(arr1, arr2) {
+			// Menyimpan perbedaan antara kedua array
+			let perbedaan = {};
+
+			// Memeriksa setiap kunci pada objek pertama
+			Object.keys(arr1).forEach(key => {
+				// Memeriksa apakah kunci tersebut ada pada objek kedua
+				if (!arr2.hasOwnProperty(key)) {
+					// Menyimpan perbedaan jika kunci tidak ada pada objek kedua
+					perbedaan[key] = arr1[key];
+				} else {
+					// Memeriksa apakah nilai dari kunci tersebut berbeda pada kedua objek
+					if (arr1[key] !== arr2[key]) {
+						// Menyimpan perbedaan nilai jika berbeda
+						perbedaan[key] = arr1[key];
+					}
+				}
+			});
+
+			// Memeriksa setiap kunci pada objek kedua
+			Object.keys(arr2).forEach(key => {
+				// Memeriksa apakah kunci tersebut tidak ada pada objek pertama
+				if (!arr1.hasOwnProperty(key)) {
+					// Menyimpan perbedaan jika kunci tidak ada pada objek pertama
+					perbedaan[key] = arr2[key];
+				} else {
+					// Memeriksa apakah nilai dari kunci tersebut berbeda pada kedua objek
+					if (arr1[key] !== arr2[key]) {
+						// Menyimpan perbedaan nilai jika berbeda
+						perbedaan[key] = arr2[key];
+					}
+				}
+			});
+
+			return perbedaan;
+		}
+
 		number_format = function(number, decimals = 0) {
 			dec_point = '.';
 			thousands_sep = ',';

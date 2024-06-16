@@ -189,32 +189,16 @@ class Client_export_sales extends CI_Controller
 	{
 		$result = ($this->db->query("select * from TblQuotation left join TblMsCustomer ON TblQuotation.MsCustomerId=TblMsCustomer.MsCustomerId where QuoId='{$id}'")->result())[0];
 		if ($result->QuoHeader == 1) {
-			$data["_header"] = ' <header>
-											<img src="' . base_url("asset/image/mgs-erp/Header.png") . '" style="width: 100%;">
-											<img class="logo" src="' . base_url("asset/image/logo/logo-1-200.png") . '" width="140px">
-											<div class="title">
-												<span class="title-head">OMAHBATA INDONESIA</span><br>
-												<span class="title-desc">Jl. Ciputat Raya No.59, RT.5/RW.2, Pondok Pinang, Kebayoran Lama, South Jakarta City, Jakarta 12310</span><br>
-												<span class="title-desc">CS  : 0812-500-500-53</span><br>
-												<span class="title-desc">Tlp : (021)-2912-5223</span><br>
-												<span class="title-desc">WA  : 0812-820-1414/0812-810-1313</span>
-											</div>
-										</header>';
-			$data["_direct"] = "CS (+62 812-500-500-53) / Admin 1 (+62 812-820-1414) / Admin 2 (+62 812-810-1313)";
-		} else if ($result->QuoHeader == 3) {
-			$data["_header"] = ' <header>
-											<img src="' . base_url("asset/image/mgs-erp/Header.png") . '" style="width: 100%;">
-											<img class="logo" src="' . base_url("asset/image/logo/logo-3-200.png") . '" width="140px">
-											<div class="title">
-												<span class="title-head">TOKO ROSTER BSD</span><br>
-												<span class="title-desc">Jl. Ciater Raya No. 185 E Kampung Maruga RT 004/09 Kel. Ciater Kec. Serpong Tangerang Selatan 15310</span><br>
-												<span class="title-desc">WA  : 0812-1348-1313</span><br>
-												<span class="title-desc">CS  : 0812-500-500-53</span><br>
-												<span class="title-desc">Tlp : (021)-7568-5590</span>
-											</div>
-										</header>';
+			$data["_header"] = '<header>
+				<img src="' . base_url("asset/image/kop/rrj_header.png") .'" style="width: 100%;"> 
+			</header>';
 			$data["_direct"] = "Admin (+62 812-1348-1313)";
-		} else if ($result->QuoHeader == 4) {
+		} else if ($result->QuoHeader == 2) {
+			$data["_header"] = '<header>
+				<img src="' . base_url("asset/image/kop/rrj_header.png") .'" style="width: 100%;"> 
+			</header>';
+			$data["_direct"] = "Admin (+62 812-1348-1313)";
+		} else if ($result->QuoHeader == 3) {
 			$data["_header"] = ' <header>
 											<img src="' . base_url("asset/image/mgs-erp/Header.png") . '" style="width: 100%;">
 											<img class="logo" src="' . base_url("asset/image/logo/logo-4-200.png") . '" width="140px">
@@ -225,43 +209,10 @@ class Client_export_sales extends CI_Controller
 											</div>
 										</header>';
 			$data["_direct"] = "Admin (+62 813-1234-8313)";
-		} else if ($result->QuoHeader == 5) {
-			$data["_header"] = ' <header>
-											<img src="' . base_url("asset/image/mgs-erp/Header.png") . '" style="width: 100%;">
-											<img class="logo" src="' . base_url("asset/image/logo/logo-5-200.png") . '" width="140px">
-											<div class="title">
-												<span class="title-head">GLOCANA INDUSTRIAL FURNITURE</span><br>
-												<span class="title-desc">Jl. Ciputat Raya No.59, RT.5/RW.2, Pondok Pinang, Kebayoran Lama, South Jakarta City, Jakarta 12310</span><br>
-												<span class="title-desc">WA  : 0817-1773-1313</span>
-											</div>
-										</header>';
-			$data["_direct"] = "Admin (+62 817-1773-8313)";
-		} else if ($result->QuoHeader == 6) {
-			$data["_header"] = ' <header>
-											<img src="' . base_url("asset/image/mgs-erp/Header.png") . '" style="width: 100%;">
-											<img class="logo" src="' . base_url("asset/image/logo/logo-6-200.png") . '" width="140px">
-											<div class="title">
-												<span class="title-head">OMAHBATA STUDIO</span><br>
-												<span class="title-desc">Jl. Ciputat Raya No.59, RT.5/RW.2, Pondok Pinang, Kebayoran Lama, South Jakarta City, Jakarta 12310</span><br>
-												<span class="title-desc">WA  : 0812-5685-1313</span>
-											</div>
-										</header>';
-			$data["_direct"] = "Admin (+62 812-5685-1313)";
-		} else if ($result->QuoHeader == 7) {
-			$data["_header"] = ' <header>
-											<img src="' . base_url("asset/image/mgs-erp/Header.png") . '" style="width: 100%;">
-											<img class="logo" src="' . base_url("asset/image/logo/logo-7-200.png") . '" width="140px">
-											<div class="title">
-												<span class="title-head">CONBLOCINDO</span><br>
-												<span class="title-desc">Jl. Ciputat Raya No.59, RT.5/RW.2, Pondok Pinang, Kebayoran Lama, South Jakarta City, Jakarta 12310</span><br>
-												<span class="title-desc">WA  : 0812-5685-1313</span>
-											</div>
-										</header>';
-			$data["_direct"] = "Admin (+62 812-810-1313)";
-		}
+		}  
 
 		$data["_data"] = $result;
-		$data["_item"] = $this->db->join("TblMsProduk","TblMsProduk.MsProdukId=TblQuoDetail.MsProdukId")->join("TblMsSatuan","TblMsSatuan.SatuanId=TblQuoDetail.SatuanId")->where("QuoDetailRef",$result->QuoCode)->get("TblQuoDetail")->result();
+		$data["_item"] = $this->db->join("TblMsProduk","TblMsProduk.MsProdukId=TblQuoDetail.MsProdukId")->join("TblMsProdukSatuan","TblMsProdukSatuan.SatuanId=TblQuoDetail.SatuanId")->where("QuoDetailRef",$result->QuoCode)->get("TblQuoDetail")->result();
 		$data["_optional"] = $this->db->query("select * from TblQuoOptional where QuoOptionalRef='" . $result->QuoCode . "'")->result();
 		$data["_delivery"] = $this->db->query("select * from TblMsCustomerDelivery where MsCustomerDeliveryId='" . $result->MsCustomerDeliveryId . "'")->row();
 

@@ -8,32 +8,20 @@
          <div class="modal-body">
             <div class="row mb-1 align-items-center">
                <div class="col">
-                  <div class="form-check form-check-inline"  data-bs-toggle="tooltip" data-bs-placement="bottom" title="OMAHBATA">
+                  <div class="form-check form-check-inline"  data-bs-toggle="tooltip" data-bs-placement="bottom" title="MAHIERA GLOBAL SOLUTION">
                      <input class="form-check-input" type="radio" name="Quoheader" id="Quoheader1" value="1" >
                      <label class="form-check-label" for="Quoheader1">
                         <img src="<?=base_url("asset/image/logo/logo-1-200.png")?>" class="rounded" width="50">
                      </label>
                   </div>
-                  <div class="form-check form-check-inline"  data-bs-toggle="tooltip" data-bs-placement="bottom" title="TOKO ROSTER BSD">
+                  <div class="form-check form-check-inline"  data-bs-toggle="tooltip" data-bs-placement="bottom" title="ROSTER REGULER JAKARTA">
+                     <input class="form-check-input" type="radio" name="Quoheader" id="Quoheader2" value="2">
+                     <label class="form-check-label" for="Quoheader2"><img src="<?=base_url("asset/image/logo/logo-2-200.png")?>" class="rounded" width="50"></label>
+                  </div>
+                  <div class="form-check form-check-inline"  data-bs-toggle="tooltip" data-bs-placement="bottom" title="BATA REGULER JAKARTA">
                      <input class="form-check-input" type="radio" name="Quoheader" id="Quoheader3" value="3">
                      <label class="form-check-label" for="Quoheader3"><img src="<?=base_url("asset/image/logo/logo-3-200.png")?>" class="rounded" width="50"></label>
-                  </div>
-                  <div class="form-check form-check-inline"  data-bs-toggle="tooltip" data-bs-placement="bottom" title="PABRIK ROSTER">
-                     <input class="form-check-input" type="radio" name="Quoheader" id="Quoheader4" value="4">
-                     <label class="form-check-label" for="Quoheader4"><img src="<?=base_url("asset/image/logo/logo-4-200.png")?>" class="rounded" width="50"></label>
-                  </div>
-                  <div class="form-check form-check-inline"  data-bs-toggle="tooltip" data-bs-placement="bottom" title="GLOCANA">
-                     <input class="form-check-input" type="radio" name="Quoheader" id="Quoheader5" value="5">
-                     <label class="form-check-label" for="Quoheader5"><img src="<?=base_url("asset/image/logo/logo-5-200.png")?>" class="rounded" width="50"></label>
-                  </div>
-                  <div class="form-check form-check-inline"  data-bs-toggle="tooltip" data-bs-placement="bottom" title="OMAHBATA STUDIO">
-                     <input class="form-check-input" type="radio" name="Quoheader" id="Quoheader6" value="6">
-                     <label class="form-check-label" for="Quoheader6"><img src="<?=base_url("asset/image/logo/logo-6-200.png")?>" class="rounded" width="50"></label>
-                  </div>
-                  <div class="form-check form-check-inline"  data-bs-toggle="tooltip" data-bs-placement="bottom" title="CONBLOCINDO">
-                     <input class="form-check-input" type="radio" name="Quoheader" id="Quoheader7" value="7">
-                     <label class="form-check-label" for="Quoheader7"><img src="<?=base_url("asset/image/logo/logo-7-200.png")?>" class="rounded" width="50"></label>
-                  </div>
+                  </div> 
                </div>
             </div>
          </div>

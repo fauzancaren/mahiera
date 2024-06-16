@@ -87,7 +87,7 @@ class Client_datatable_sales extends CI_Controller
                   $totaldiscitem = 0;
                   $item = ""; 
                   $query = $this->db->join("TblMsProduk","TblMsProduk.MsProdukId=TblQuoDetail.MsProdukId") 
-                  ->join("TblMsSatuan","TblMsSatuan.SatuanId=TblQuoDetail.SatuanId")->where("QuoDetailRef",$master->QuoCode)->get("TblQuoDetail")->result();
+                  ->join("TblMsProdukSatuan","TblMsProdukSatuan.SatuanId=TblQuoDetail.SatuanId")->where("QuoDetailRef",$master->QuoCode)->get("TblQuoDetail")->result();
 
                   foreach ($query as $row) {
                         if ($row->QuoDetailDiscTypeAll == 1) {
@@ -125,18 +125,23 @@ class Client_datatable_sales extends CI_Controller
                                           ' . $price . '
                                     </div>
                                     <div class="col-md-3 col-8 px-md-2 mt-0 mt-md-1">';
-                                   $data_split_var =  explode("|",$row->QuoDetailVarian);
-                                   foreach($data_split_var as $row1){
-                                          $data_split_var_row =  explode(":",$row1);
+                                   // $item .= $row->QuoDetailVarian;
+                                    $varian =  JSON_DECODE($row->QuoDetailVarian); 
+                                    foreach ($varian as $x => $y) {  
                                           $item .= '  <div class="row">
                                                             <div class="col-auto pe-0" style="min-width:70px;">
-                                                                  <span class="fw-bold text-secondary">'.$data_split_var_row[0].'</span>
+                                                                  <span class="fw-bold text-secondary">'.$x.'</span>
                                                             </div>      
                                                             <div class="col pe-0">
-                                                                  <span class="text-dark fw-bold">'.$data_split_var_row[1].'</span>
+                                                                  <span class="text-dark fw-bold">'.$y.'</span>
                                                             </div>
                                                       </div>';
-                                   } 
+                                    }
+                                         
+                                         
+                                   // foreach($data_split_var as $row1){
+                              //           
+                                    //} 
                         $item .= '</div>
                                     <div class="col-md-2 col-4">
                                           <span class="fw-bold text-secondary">Qty</span><br>

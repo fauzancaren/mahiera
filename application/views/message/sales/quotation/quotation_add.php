@@ -175,7 +175,7 @@
                         </div>
                      </div>
                   </div> 
-                  <div class="row justify-content-center">
+                  <div class="row justify-content-center d-none">
                      <div class="col-12">
                         <div class="row mb-1 align-items-center">
                            <div class="label-border-right mb-3" style="position:relative">
@@ -645,86 +645,14 @@
       $(".get-item").each(function(index, thisrow) { 
 
          /* EVENT VARIAN DAN STOCK ITEM */
-         $(thisrow).find(".custom-select-item.variansales").each(function() { 
-            for(var i = 0; i < data_item[index]["selected"].length ; i++){ 
-               if($(this).data("header")==(data_item[index]["selected"][i].split(":"))[0]){
-                  $(this).val((data_item[index]["selected"][i].split(":"))[1]);
-                  break;
-               }
-            }
-         });
-         $(thisrow).find(".custom-select-item.variansales").change(function() {  
-            var arr = []; 
-            $(thisrow).find(`.custom-select-item.variansales`).each(function(){  
-               arr.push($(this).data("header") + ":" + $(this).val());
-            }); 
-            for (var i = 0; data_item.length > i; i++) {
-                  if ( i != index && data_item[i]["MsProdukId"] == data_item[index]["MsProdukId"] && (arr.diff(data_item[i]["selected"])).length == 0) {
-                     Swal.fire({
-                        icon: 'error',
-                        text: 'Data Sudah Ada',
-                        showConfirmButton: false,
-                        allowOutsideClick: false,
-                        allowEscapeKey: false,
-                        timer: 1000
-                     }); 
-
-                     $(thisrow).find(".custom-select-item.variansales").each(function() { 
-                        for(var i = 0; i < data_item[index]["selected"].length ; i++){ 
-                           if($(this).data("header")==(data_item[index]["selected"][i].split(":"))[0]){
-                              $(this).val((data_item[index]["selected"][i].split(":"))[1]);
-                              break;
-                           }
-                        }
-                     });
-                     return false;
-                  }
-               }
-            
-            for(var i = 0; i < data_item[index]["detail"].length ; i++){ 
-               var datavarian = data_item[index]["detail"][i]["MsProdukDetailVarian"].split("|");
-               let defarr = arr.diff(datavarian);
-               if(defarr.length==0){ 
-                  $(thisrow).find(`span[name="uom"]`).each(function(){ 
-                     $(this).html("/" +  data_item[index]["detail"][i]["SatuanName"]);
-                  })
-                  $(thisrow).find(`span[name="price"]`).each(function(){ 
-                     $(this).html("Rp. " + number_format(parseInt(data_item[index]["detail"][i]["MsProdukDetailPrice"])));
-                  })
-                  data_item[index]["price"] = parseInt(data_item[index]["detail"][i]["MsProdukDetailPrice"]);
-                  data_item[index]["uom"] = data_item[index]["detail"][i]["SatuanId"];
-                  
-               }
-            }    
-            data_item[index]["selected"] = arr;
-            $(thisrow).find(".custom-select-item.stocksales").trigger("change");
-         }).trigger("change"); 
-         $(thisrow).find(".custom-select-item.stocksales").change(function() { 
-            var arr = []; 
-            var workplace = $(this).val();
-            $(thisrow).find(`.custom-select-item.variansales`).each(function(){  
-               arr.push($(this).data("header") + ":" + $(this).val());
-            });  
-            var count = 0;
-            for(var i = 0; i < data_item[index]["stock"].length ; i++){ 
-               var datavarian = data_item[index]["stock"][i]["MsProdukVarian"].split("|");
-               let defarr = arr.diff(datavarian); 
-               if(workplace == 0){ 
-                     if(defarr.length==0 ){  
-                        count += parseInt(data_item[index]["stock"][i]["MsProdukStockQty"]);
-                     }
-               }else{
-                     if(defarr.length==0 && workplace == data_item[index]["stock"][i]["MsWorkplaceId"]){  
-                        count += parseInt(data_item[index]["stock"][i]["MsProdukStockQty"]);
-                     }
-               }
-            } 
-            $(thisrow).find(`span[name="stock"]`).each(function(){ 
-               $(this).html(number_format(count));
-            });
-         }).trigger("change");
-
-
+         // $(thisrow).find(".custom-select-item.variansales").each(function() { 
+         //    for(var i = 0; i < data_item[index]["selected"].length ; i++){ 
+         //       if($(this).data("header")==(data_item[index]["selected"][i].split(":"))[0]){
+         //          $(this).val((data_item[index]["selected"][i].split(":"))[1]);
+         //          break;
+         //       }
+         //    }
+         // });
          function total_item() { 
             if( data_item[index]["disctype"] == 0){
                var total = (data_item[index]["price"]) * data_item[index]["qty"];
@@ -746,6 +674,79 @@
             }
             total_item_sub();
          }
+
+
+         $(thisrow).find(".custom-select-item.variansales").change(function() {  
+
+            //PENGECEKAN ITEM TERDAPAT VARIAN YANG SAMA 
+            for (var i = 0; data_item.length > i; i++) {  
+               var old_data = data_item[index]["selected"][$(this).data("header")];
+               var select_data = data_item[index]["selected"];
+               select_data[$(this).data("header")] = $(this).val();
+
+               let defarr = perbedaanArray(data_item[i]["selected"], select_data);   
+               if ( i != index && data_item[i]["MsProdukId"] == data_item[index]["MsProdukId"]  && (Object.keys(defarr).length) == 0){
+                  Swal.fire({
+                     icon: 'error',
+                     text: 'Data Sudah Ada',
+                     showConfirmButton: false,
+                     allowOutsideClick: false,
+                     allowEscapeKey: false,
+                     timer: 1000
+                  }); 
+                  data_item[index]["selected"][$(this).data("header")] = old_data;
+                  $(this).val(data_item[index]["selected"][$(this).data("header")]);
+                  return false;
+               } 
+            }
+            
+            for(var i = 0; i < data_item[index]["detail"].length ; i++){ 
+               var arr = JSON.parse(data_item[index]["detail"][i]["MsProdukDetailVarian"])
+               let defarr = perbedaanArray(data_item[index]["selected"], arr);    
+               if((Object.keys(defarr).length) == 0){ 
+                  $(thisrow).find(`span[name="uom"]`).each(function(){ 
+                     $(this).html("/" +  data_item[index]["detail"][i]["SatuanName"]);
+                  })
+                  $(thisrow).find(`span[name="price"]`).each(function(){ 
+                     $(this).html("Rp. " + number_format(parseInt(data_item[index]["detail"][i]["MsProdukDetailPrice"])));
+                  })
+                  data_item[index]["price"] = parseInt(data_item[index]["detail"][i]["MsProdukDetailPrice"]);
+                  data_item[index]["uom"] = data_item[index]["detail"][i]["SatuanId"]; 
+               }
+            }    
+            data_item[index]["selected"][$(this).data("header")] = $(this).val();
+            total_item();
+            // $(thisrow).find(".custom-select-item.stocksales").trigger("change");
+         }).trigger("change"); 
+
+         
+         // $(thisrow).find(".custom-select-item.stocksales").change(function() { 
+         //    var arr = []; 
+         //    var workplace = $(this).val();
+         //    $(thisrow).find(`.custom-select-item.variansales`).each(function(){  
+         //       arr.push($(this).data("header") + ":" + $(this).val());
+         //    });  
+         //    var count = 0;
+         //    for(var i = 0; i < data_item[index]["stock"].length ; i++){ 
+         //       var datavarian = data_item[index]["stock"][i]["MsProdukVarian"].split("|");
+         //       let defarr = arr.diff(datavarian); 
+         //       if(workplace == 0){ 
+         //             if(defarr.length==0 ){  
+         //                count += parseInt(data_item[index]["stock"][i]["MsProdukStockQty"]);
+         //             }
+         //       }else{
+         //             if(defarr.length==0 && workplace == data_item[index]["stock"][i]["MsWorkplaceId"]){  
+         //                count += parseInt(data_item[index]["stock"][i]["MsProdukStockQty"]);
+         //             }
+         //       }
+         //    } 
+         //    $(thisrow).find(`span[name="stock"]`).each(function(){ 
+         //       $(this).html(number_format(count));
+         //    });
+         // }).trigger("change");
+
+
+        
        
 
          var textdisc = $(thisrow).find('input[name="SalesDetailDisc"]').val(data_item[index]["discitemprice"]).keyup(function() {
@@ -802,53 +803,53 @@
             }
          }); 
 
-      $(thisrow).find('input[type=radio][name=SalesDetailDiscType-'+ data_item[index]["MsProdukId"] +data_item[index]["generate"] +']').change(function() { 
-         if (this.value == '0') {
-            $(textdisc).prop("disabled",false);
-            $(textdiscPercen).prop("disabled",true);
-         }
-         else if (this.value == '1') {
-            $(textdisc).prop("disabled",true);
-            $(textdiscPercen).prop("disabled",false);
-         }
-         data_item[index]["discitemtype"] = this.value;
-      });
+         $(thisrow).find('input[type=radio][name=SalesDetailDiscType-'+ data_item[index]["MsProdukId"] +data_item[index]["generate"] +']').change(function() { 
+            if (this.value == '0') {
+               $(textdisc).prop("disabled",false);
+               $(textdiscPercen).prop("disabled",true);
+            }
+            else if (this.value == '1') {
+               $(textdisc).prop("disabled",true);
+               $(textdiscPercen).prop("disabled",false);
+            }
+            data_item[index]["discitemtype"] = this.value;
+         });
 
-      $(thisrow).find('input[type=radio][name=SalesDetailDiscType3-'+ data_item[index]["MsProdukId"] +data_item[index]["generate"] +']').change(function() { 
-         if (this.value == '0') {
-            $(textdisc2).prop("disabled",false);
-            $(textdiscPercen2).prop("disabled",true);
-         }
-         else if (this.value == '1') {
-            $(textdisc2).prop("disabled",true);
-            $(textdiscPercen2).prop("disabled",false);
-         }
-         data_item[index]["disctotaltype"] = this.value;
-      });
-      
-      $(thisrow).find('input[type=radio][name=SalesDetailDiscType2-'+ data_item[index]["MsProdukId"] +data_item[index]["generate"] +']').change(function() {
-         if (this.value == '0') {
-            $(textdisc).val("0").trigger("keyup"); 
-            $(textdisc2).val("0").trigger("keyup"); 
-            $('.form-disc-item-'+ data_item[index]["MsProdukId"] +data_item[index]["generate"]).hide(); 
-            $('.form-disc-total-'+ data_item[index]["MsProdukId"] +data_item[index]["generate"]).hide(); 
-         }
-         else if (this.value == '1') {
-            $('.form-disc-item-'+ data_item[index]["MsProdukId"] +data_item[index]["generate"]).show(); 
-            $('.form-disc-total-'+ data_item[index]["MsProdukId"] +data_item[index]["generate"]).hide(); 
-            $(textdisc2).val("0").trigger("keyup"); 
-         }
-         else if (this.value == '2') {
-            $('.form-disc-item-'+ data_item[index]["MsProdukId"] +data_item[index]["generate"]).hide(); 
-            $('.form-disc-total-'+ data_item[index]["MsProdukId"] +data_item[index]["generate"]).show(); 
-            $(textdisc).val("0").trigger("keyup"); 
-         }
-         data_item[index]["disctype"] = this.value;
-      });
+         $(thisrow).find('input[type=radio][name=SalesDetailDiscType3-'+ data_item[index]["MsProdukId"] +data_item[index]["generate"] +']').change(function() { 
+            if (this.value == '0') {
+               $(textdisc2).prop("disabled",false);
+               $(textdiscPercen2).prop("disabled",true);
+            }
+            else if (this.value == '1') {
+               $(textdisc2).prop("disabled",true);
+               $(textdiscPercen2).prop("disabled",false);
+            }
+            data_item[index]["disctotaltype"] = this.value;
+         });
+         
+         $(thisrow).find('input[type=radio][name=SalesDetailDiscType2-'+ data_item[index]["MsProdukId"] +data_item[index]["generate"] +']').change(function() {
+            if (this.value == '0') {
+               $(textdisc).val("0").trigger("keyup"); 
+               $(textdisc2).val("0").trigger("keyup"); 
+               $('.form-disc-item-'+ data_item[index]["MsProdukId"] +data_item[index]["generate"]).hide(); 
+               $('.form-disc-total-'+ data_item[index]["MsProdukId"] +data_item[index]["generate"]).hide(); 
+            }
+            else if (this.value == '1') {
+               $('.form-disc-item-'+ data_item[index]["MsProdukId"] +data_item[index]["generate"]).show(); 
+               $('.form-disc-total-'+ data_item[index]["MsProdukId"] +data_item[index]["generate"]).hide(); 
+               $(textdisc2).val("0").trigger("keyup"); 
+            }
+            else if (this.value == '2') {
+               $('.form-disc-item-'+ data_item[index]["MsProdukId"] +data_item[index]["generate"]).hide(); 
+               $('.form-disc-total-'+ data_item[index]["MsProdukId"] +data_item[index]["generate"]).show(); 
+               $(textdisc).val("0").trigger("keyup"); 
+            }
+            data_item[index]["disctype"] = this.value;
+         });
 
-      $(thisrow).find('input[type=radio][name=SalesDetailDiscType-'+ data_item[index]["MsProdukId"] +data_item[index]["generate"] +'][value='+ data_item[index]["discitemtype"] +']').prop("checked",true).trigger("change");
-      $(thisrow).find('input[type=radio][name=SalesDetailDiscType2-'+ data_item[index]["MsProdukId"] +data_item[index]["generate"] +'][value='+ data_item[index]["disctype"] +']').prop("checked",true).trigger("change");
-      $(thisrow).find('input[type=radio][name=SalesDetailDiscType3-'+ data_item[index]["MsProdukId"] +data_item[index]["generate"] +'][value='+ data_item[index]["disctotaltype"] +']').prop("checked",true).trigger("change");
+         $(thisrow).find('input[type=radio][name=SalesDetailDiscType-'+ data_item[index]["MsProdukId"] +data_item[index]["generate"] +'][value='+ data_item[index]["discitemtype"] +']').prop("checked",true).trigger("change");
+         $(thisrow).find('input[type=radio][name=SalesDetailDiscType2-'+ data_item[index]["MsProdukId"] +data_item[index]["generate"] +'][value='+ data_item[index]["disctype"] +']').prop("checked",true).trigger("change");
+         $(thisrow).find('input[type=radio][name=SalesDetailDiscType3-'+ data_item[index]["MsProdukId"] +data_item[index]["generate"] +'][value='+ data_item[index]["disctotaltype"] +']').prop("checked",true).trigger("change");
          var numberpresed = 1;
          var textqty = $(thisrow).find('input[name="SalesDetailQty"]').val(data_item[index]["qty"]).keyup(function() { 
             data_item[index]["qty"] = this.value.replaceAll(",", ""); 
@@ -885,7 +886,7 @@
             delimiter: ","
          })
       });
-      
+       
       $('.lazy').lazy({
          afterLoad: function(element){
             $(element).removeClass("skeleton");
@@ -913,11 +914,11 @@
                }
             });
             
-            item_data_select = function(data){ 
-               console.log(data);
-               //try{
+            item_data_select = function(data){  
+               //PENGECEKAN JIKA ITEM DENGAN TYPE TERSEBUT SUDAH ADA 
                for (var i = 0; data_item.length > i; i++) {
-                  if (data_item[i]["MsProdukId"] == data.MsProdukId && (data_item[i]["selected"].diff(data.selected)).length == 0) {
+                  let defarr = perbedaanArray(data_item[i]["selected"],data.selected);   
+                  if (data_item[i]["MsProdukId"] == data.MsProdukId && (Object.keys(defarr).length) == 0) {
                      Swal.fire({
                         icon: 'error',
                         text: 'Data Sudah Ada',
@@ -951,27 +952,22 @@
                               <span class="fs-8 fw-bold" style="color:gray;" name="uom">/Pcs</span>
                            </div>
                            <div class="flex">`;
-               var varian = data.MsProdukVarian.split(";");
-               for(var j = 0;j < varian.length;j++){
-                  var varheader = varian[j].split(":");
-                  htmlItem += ` 
-                                       <select class="custom-select-item variansales" id="${data.MsProdukId}${varheader[0]}" data-index="${i}" data-header="${varheader[0]}" style="padding-right: 1.5rem;">`;
-                  var vardetail = varheader[1].split("|");
-                  for(var k = 0;k < vardetail.length;k++){
+                           
+               var varian = JSON.parse(data.MsProdukVarian);
+               for (const [key, val] of Object.entries(varian)) { 
+                  htmlItem += `<select class="custom-select-item variansales" id="${data.MsProdukId}${key}" data-index="${i}" data-header="${key}" style="padding-right: 1.5rem;">`; 
+                  for(var j = 0;j < val.length;j++){  
                      var selected = "";
-                     for(var l = 0; l < data.selected.length;l++){
-                        if(data.selected[l] == (varheader[0]+ ":" + vardetail[k])){
+                     for (const [keyselect, valselect] of Object.entries(data.selected)) { 
+                        if(keyselect == key && valselect == val[j]) {
                            selected = "selected";
                            break; 
                         }
                      }
-                     htmlItem += `<option value='${vardetail[k]}' ${selected}>${vardetail[k]}</option>`;  
-                     
-                  }
+                     htmlItem += `<option value='${val[j]}'  ${selected}>${val[j]}</option>`;
+                  }         
                   htmlItem += `</select>`;
-                  if(j!=varian.length-1
-                  ) htmlItem += `<span>|</span>`;
-               }
+               } 
                htmlItem += `</div> 
                            <div class="action pt-2"> 
                               <div class="d-flex justify-content-between" style="font-size:0.85rem"> 
@@ -1031,6 +1027,7 @@
                      <a onclick="hapus_item_click(${data.MsProdukId},\'${number_uniq}\')" class="text-danger pointer" title="Hapus Item"><i class="fas fa-trash-alt fa-lg pe-2"></i>Hapus</a>
                   </div>`;
                numberitem = numberitem + 5;  
+ 
 
                var arr = [];
                arr["html"] = htmlItem;
@@ -1499,7 +1496,7 @@
             /* data_item (html,itemid,vendorcode,price,qty,disc,uom,total) */
             var data = {
                "MsProdukId": data_item[i]["MsProdukId"],
-               "QuoDetailVarian": data_item[i]["selected"].join("|"),
+               "QuoDetailVarian": JSON.stringify(data_item[i]["selected"]),
                "QuoDetailPrice": data_item[i]["price"],
                "QuoDetailQty": data_item[i]["qty"],
                "QuoDetailTotal": data_item[i]["pricetotal"],
@@ -1515,8 +1512,7 @@
                "SatuanId":data_item[i]["uom"],
             };
             detailitem.push(data);
-         }
-
+         } 
          var detailoptional = [];
          for (var i = 0; data_optional.length > i; i++) {
             /* data_item (html,itemid,vendorcode,price,qty,disc,uom,total) */

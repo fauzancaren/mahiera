@@ -55,6 +55,7 @@
     </div>
 </div>
 <script>
+  
     var mode = "action item";
     var pagenow = 1;
     var data_item_select = []; 
@@ -79,22 +80,22 @@
             success: function(data) { 
                 var html = "";
                 data_item_select = data["data"];
+                
                 for(var i = 0; i<data["data"].length;i++){
+                    
                     var htmlvarian = "";
-                    var varian = data["data"][i]["MsProdukVarian"].split(";");
-                    for(var j = 0;j < varian.length;j++){
-                        var varheader = varian[j].split(":");
+                    var varian = JSON.parse(data["data"][i]["MsProdukVarian"]);
+                    for (const [key, val] of Object.entries(varian)) {   
                         htmlvarian += ` <div class="d-flex justify-content-between py-1">
-                                            <span class="fs-8">${varheader[0]}</span>
-                                            <select class="custom-select-item varian" id="${data["data"][i]["MsProdukId"]}${varheader[0]}" data-index="${i}" data-header="${varheader[0]}" style="width: 70%">`;
-                        var vardetail = varheader[1].split("|");
-                        for(var k = 0;k < vardetail.length;k++){ 
-                            htmlvarian += `<option value='${vardetail[k]}' ${((varheader[0] == "Warna" && vardetail[k]=="GREY") ? "selected" : "")}>${vardetail[k]}</option>`;
-                        }
+                                            <span class="fs-8">${key}</span>
+                                            <select class="custom-select-item varian" id="${data["data"][i]["MsProdukId"]}${key}" data-index="${i}" data-header="${key}" style="width: 70%">`;
+                        for(var j = 0;j < val.length;j++){
+                            htmlvarian += `<option value='${val[j]}'>${val[j]}</option>`;
+                        }         
                         htmlvarian += ` 
                                             </select>  
-                                        </div> `;
-                    }
+                                        </div> `;       
+                    } 
                     html += `
                         <div class="">
                             <div class="card-item" data-index="${i}" data-id="${data["data"][i]["MsProdukId"]}">
@@ -140,15 +141,16 @@
 
 
                 $(".custom-select-item.varian").change(function() {
-                    var arr = [];
-                    var id = $(this).data("index");
-                    $(`.custom-select-item.varian[data-index=${id}]`).each(function(){  
-                        arr.push($(this).data("header") + ":" + $(this).val());
-                    }); 
+                    var arr = {};
+                    var id = $(this).data("index"); 
+                    $(`.custom-select-item.varian[data-index=${id}]`).each(function(){   
+                        var header =  $(this).data("header");
+                        arr[header] = $(this).val();  
+                    });  
                     for(var i = 0; i < data_item_select[id]["MsProdukDetail"].length ; i++){ 
-                        var datavarian = data_item_select[id]["MsProdukDetail"][i]["MsProdukDetailVarian"].split("|");
-                        let defarr = arr.diff(datavarian);
-                        if(defarr.length==0){ 
+                        var datavarian = JSON.parse(data_item_select[id]["MsProdukDetail"][i]["MsProdukDetailVarian"]); 
+                        let defarr = perbedaanArray(arr,datavarian);  
+                        if(Object.keys(defarr).length==0){  
                             $(`.uomitem[data-index=${id}]`).each(function(){ 
                                 $(this).html("/" +  data_item_select[id]["MsProdukDetail"][i]["SatuanName"]);
                             })
@@ -161,17 +163,18 @@
                     $(`.custom-select-item.stock[data-index=${id}]`).trigger("change");
                 });
                 $(".custom-select-item.stock").change(function() { 
-                    var arr = [];
-                    var id = $(this).data("index");
-                    var worplace = $(this).val();
-                    $(`.custom-select-item.varian[data-index=${id}]`).each(function(){  
-                        arr.push($(this).data("header") + ":" + $(this).val());
-                    }); 
+                    var arr = {};
+                    var id = $(this).data("index"); 
+                    $(`.custom-select-item.varian[data-index=${id}]`).each(function(){   
+                        var header =  $(this).data("header");
+                        arr[header] = $(this).val();  
+                    });  
 
                     var count = 0;
                     for(var i = 0; i < data_item_select[id]["MsProdukStock"].length ; i++){ 
                         var datavarian = data_item_select[id]["MsProdukStock"][i]["MsProdukVarian"].split("|");
-                        let defarr = arr.diff(datavarian); 
+                        let defarr = arr.diff(datavarian);
+                        console.log(defarr); 
                         if(worplace == 0){ 
                             if(defarr.length==0 ){  
                                 count += parseInt(data_item_select[id]["MsProdukStock"][i]["MsProdukStockQty"]);
@@ -187,6 +190,8 @@
                         $(this).html(number_format(count));
                     }) 
                 })
+
+
                 //syncron all data
                 $( ".custom-select-item[data-header='Vendor']" ).each(function(){
                     $(this).trigger("change");

@@ -210,11 +210,11 @@ class Model_app extends CI_Model
 		if (strlen($StrEmp) == 1) {
 			$EmpId = "0" . $StrEmp;
 		}
-		$regexcode = "ALY/XIII/" . $StoreCode . "/QO-";
+		$regexcode = "QUO/" . $StoreCode . "/";
 		$romawi = $this->Romawi_date($StrMonth, $StrYear);
 
-		$query = $this->db->query("SELECT ifnull(max(SUBSTR(QuoCode,16,4)),0) as max FROM TblQuotation where MONTH(QuoDate2)='" . $StrMonth . "' and MsWorkplaceId='" . $StrWorkplaceCode . "' and
-				YEAR(QuoDate2)='" . $StrYear . "' and SUBSTR(QuoCode,21,2) = '" . $EmpId . "'")->result();
+		$query = $this->db->query("SELECT ifnull(max(SUBSTR(QuoCode,8,4)),0) as max FROM TblQuotation where MONTH(QuoDate2)='" . $StrMonth . "' and SUBSTR(QuoCode,5,2)='" . $StoreCode . "' and
+				YEAR(QuoDate2)='" . $StrYear . "' and SUBSTR(QuoCode,13,2) = '" . $EmpId . "'")->result();
 		if ($query) {
 			foreach ($query as $rows) {
 				$nextcode = $rows->max;
@@ -250,11 +250,11 @@ class Model_app extends CI_Model
 		if (strlen($StrEmp) == 1) {
 			$EmpId = "0" . $StrEmp;
 		}
-		$regexcode = "ALY/XIII/" . $StoreCode . "/SL-";
+		$regexcode = "SALES/" . $StoreCode . "/";
 		$romawi = $this->Romawi_date($StrMonth, $StrYear);
 
-		$query = $this->db->query("SELECT ifnull(max(SUBSTR(SalesCode,16,4)),0) as max FROM TblSales where MONTH(SalesDate2)='" . $StrMonth . "' and SUBSTR(SalesCode,10,2)='" . $StoreCode . "' and
-				YEAR(SalesDate2)='" . $StrYear . "' and SUBSTR(SalesCode,21,2) = '" . $EmpId . "'")->result();
+		$query = $this->db->query("SELECT ifnull(max(SUBSTR(SalesCode,10,4)),0) as max FROM TblSales where MONTH(SalesDate2)='" . $StrMonth . "' and SUBSTR(SalesCode,7,2)='" . $StoreCode . "' and
+				YEAR(SalesDate2)='" . $StrYear . "' and SUBSTR(SalesCode,15,2) = '" . $EmpId . "'")->result();
 		if ($query) {
 			foreach ($query as $rows) {
 				$nextcode = $rows->max;
