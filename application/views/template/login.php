@@ -117,7 +117,7 @@
                             timer: 1500,
                         }).then((result) => {
                             if (result.dismiss === Swal.DismissReason.timer) {
-                                window.location.replace('<?= base_url(); ?>');
+                                window.location.replace('<?= base_url("client"); ?>');
                             }
                         })
 
