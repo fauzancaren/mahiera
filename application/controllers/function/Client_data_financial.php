@@ -278,10 +278,10 @@ class Client_data_financial extends CI_Controller
                         <span>' . $key["name"] . '  <span class="fw-bold">(' . $this->total_petty_cash_category($key["id"], $store, $dateend) . ')</span></span>
                      </div>
                      <div class="col-auto px-1 text-end" style="width:7rem">
-                        <span class="fw-bold">' . number_format($totalin->FinancialTotal, 0) . '</span>
+                        <span class="fw-bold">' . number_format((int)$totalin->FinancialTotal, 0) . '</span>
                      </div>
                      <div class="col-auto px-0 text-end" style="width:7rem">
-                        <span class="fw-bold">' . number_format($totalout->FinancialTotal, 0) . '</span>
+                        <span class="fw-bold">' . number_format((int)$totalout->FinancialTotal, 0) . '</span>
                      </div>
                   </a>
                </div>
@@ -319,10 +319,10 @@ class Client_data_financial extends CI_Controller
                         <span>' . $row["name"] . '</span>
                      </div>
                      <div class="col-auto px-1 text-end" style="width:7rem">
-                        <span class="fw-bold">' . number_format($totalin->FinancialTotal, 0) . '</span>
+                        <span class="fw-bold">' . number_format((int)$totalin->FinancialTotal, 0) . '</span>
                      </div>
                      <div class="col-auto px-0 text-end" style="width:7rem">
-                        <span class="fw-bold">' . number_format($totalout->FinancialTotal, 0) . '</span>
+                        <span class="fw-bold">' . number_format((int)$totalout->FinancialTotal, 0) . '</span>
                      </div>
                   </a>';
          }

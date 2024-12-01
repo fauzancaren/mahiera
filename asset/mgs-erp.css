@@ -213,7 +213,7 @@ body {
 }
 
 #sidebar-wrapper {
-  width: 20rem;
+  width: 18rem;
   min-height: 100vh;
   margin-left: 0;
   transition: width 0.25s; 
@@ -466,7 +466,13 @@ ul.treeview-menu > li.selected > a::after {
   border-top-right-radius: 1rem;
   cursor: pointer;
 }
+.close#sidebar-wrapper .header-text{
+  display: none !important;
+}
 
+#sidebar-wrapper .header-text{
+  display: flex;
+}
 .close#sidebar-wrapper ul.sidebar-menu > li:hover > a::before {
   width: 4rem;
   content: "";

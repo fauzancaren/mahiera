@@ -96,9 +96,9 @@
 		<div class="bg-white" id="sidebar-wrapper">
 			<div class="header-sidebar d-flex align-items-center ps-2 py-2" style="height: 4rem; border-bottom: 1px solid #dee2e6; ">
 				<img class="px-2" src="<?= base_url("asset/image/mgs-erp/logo.png") ?>" alt="icon whatsapp" height="40"> 
-				<div class="d-flex flex-column">
-					<span class="fw-bold" style="font-size: 1.6rem;padding-bottom: 0;margin-bottom: 0;color: #0082cd;height: 1.8rem;">MGS-ERP</span>
-					<span class="fw-bold" style="font-size:0.6rem;color: #00a2ff;padding: 2px;">Aplikasi Kebutuhan Perusahaan</span>
+				<div class="d-flex flex-column header-text">
+					<div class="fw-bold" style="font-size: 1.6rem;padding-bottom: 0;margin-bottom: 0;color: #0082cd;height: 1.8rem;">MGS-ERP</div>
+					<div class="fw-bold" style="font-size:0.6rem;color: #00a2ff;padding: 2px;">Aplikasi Kebutuhan Perusahaan</div>
 				</div> 
 				<button type="button" id="closeToggle" class="close-menu ms-auto btn-close me-2" aria-label="Close"></button>
 			</div> 

@@ -219,10 +219,21 @@ class Client_datatable extends CI_Controller
 
     function get_item(){
          // SETUP DATATABLE
+        // $data = array();
+        // $dataproduk = $this->db->join("TblMsProdukCategory","TblMsProdukCategory.MsProdukCatId=TblMsProduk.MsProdukCatId")->get("TblMsProduk")->result();
+        // SETUP DATATABLE
+        $this->m_master->table = 'TblMsProduk';
+        $this->m_master->tablejoin = array(
+            array(0 => 'TblMsProdukCategory', 1 => 'TblMsProdukCategory.MsProdukCatId=TblMsProduk.MsProdukCatId') 
+        );
+        $this->m_master->column_order = array(null, 'MsProdukCode', 'MsProdukName', 'MsItemName'); //set column field database for datatable orderable
+        $this->m_master->column_search = array('MsProdukCode', 'MsProdukName'); //set column field database for datatable searchable 
+        $this->m_master->order = array('MsProdukCode' => 'asc', 'MsProdukName' => 'asc'); // default order  
+        // PROSES DATA
+        $list = $this->m_master->get_datatables();
         $data = array();
-        $dataproduk = $this->db->join("TblMsProdukCategory","TblMsProdukCategory.MsProdukCatId=TblMsProduk.MsProdukCatId")->get("TblMsProduk")->result();
-        $no= 0;
-        foreach ($dataproduk as $master) { 
+        $no = $_POST['start']; 
+        foreach ($list as $master) { 
             if (file_exists(getcwd() . "/asset/image/produk/" .  $master->MsProdukId."/".$master->MsProdukCode."_1.png")) {
                $urlimage = base_url("asset/image/produk/".$master->MsProdukId."/".$master->MsProdukCode."_1.png");
             }else{ 
@@ -246,9 +257,9 @@ class Client_datatable extends CI_Controller
             $data[] = $row;
         }
         $output = array(
-            "draw" => $_POST['draw'],
-            "recordsTotal" => $no,
-            "recordsFiltered" => $no,
+            "draw" => $_POST['draw'], 
+            "recordsTotal" => $this->m_master->count_all(),
+            "recordsFiltered" => $this->m_master->count_filtered(),
             "data" => $data,
         ); 
         echo json_encode($output);

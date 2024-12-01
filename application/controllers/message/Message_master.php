@@ -2119,7 +2119,7 @@ class Message_master extends CI_Controller
                                     if(data){
                                         Swal.fire({
                                             icon: \'success\',
-                                            text: \'Tambah data berhasil\',
+                                            text: \'Edit data berhasil\',
                                             showConfirmButton: false,
                                                 allowOutsideClick: false,
                                                 allowEscapeKey: false,
@@ -2132,7 +2132,7 @@ class Message_master extends CI_Controller
                                     }else{
                                         Swal.fire({
                                             icon: \'error\',
-                                            text: \'Tambah data gagal\',
+                                            text: \'Edit data gagal\',
                                             showConfirmButton: false,
                                                 allowOutsideClick: false,
                                                 allowEscapeKey: false,
